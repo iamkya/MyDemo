@@ -26,92 +26,54 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-
-                            while (true) {
-
-                                Thread.sleep(getSleepTime() * 1000);
-
-
-                                work(431, 143);
-
-                            }
-
-
-                        }catch (Throwable e){
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-
-
+                new WorkingThread().start();
             }
         });
     }
 
-    private int getSleepTime() {
-
-        Random rand = new Random();
-        int value = rand.nextInt(20) + 10 ;
-
-        return value;
-    }
-
-    private String getClickPoint() {
-        Random rand = new Random();
-
-        int x = rand.nextInt(200) + 1000;
-        int y = rand.nextInt(70) + 710;
-
-        return x + " " + y;
-    }
-
-    private void work(int xcoord, int ycoord)
-    {
-        OutputStream os = null;
-        try {
-            Process sh = Runtime.getRuntime().exec("su", null,null);
-
-            os = sh.getOutputStream();
-            os.write(("/system/bin/screencap -p " + "/sdcard/colorPickerTemp.png").getBytes("ASCII"));
-            os.flush();
-
-            os.close();
-            sh.waitFor();
-
-            Bitmap screen = BitmapFactory.decodeFile("/sdcard/colorPickerTemp.png");
-            int pixel = screen.getPixel(xcoord ,ycoord);
-            //Log.e("cmd", "Pixel Color: + " + pixel + " at x:" + xcoord + " y:" + ycoord);
-
-            if(pixel != -527361) {
-
-                String cmd = "input tap " + getClickPoint();
-                for(int i = 0; i < 5; i++) {
-
-                    sh = Runtime.getRuntime().exec("su", null,null);
-                    os = sh.getOutputStream();
-
-//                    os.write(("input tap 1120 750").getBytes("ASCII"));
-                    os.write((cmd).getBytes("ASCII"));
-
-                    //Log.e("cmd", cmd);
-
-                    os.flush();
-                    os.close();
-
-                    sh.waitFor();
-
-                    Thread.sleep(500);
-                }
-
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
+//    private void work(int xcoord, int ycoord)
+//    {
+//        OutputStream os = null;
+//        try {
+//            Process sh = Runtime.getRuntime().exec("su", null,null);
+//
+//            os = sh.getOutputStream();
+//            os.write(("/system/bin/screencap -p " + "/sdcard/colorPickerTemp.png").getBytes("ASCII"));
+//            os.flush();
+//
+//            os.close();
+//            sh.waitFor();
+//
+//            Bitmap screen = BitmapFactory.decodeFile("/sdcard/colorPickerTemp.png");
+//            int pixel = screen.getPixel(xcoord ,ycoord);
+//            //Log.e("cmd", "Pixel Color: + " + pixel + " at x:" + xcoord + " y:" + ycoord);
+//
+//            if(pixel != -527361) {
+//
+//                String cmd = "input tap " + getClickPoint();
+//                for(int i = 0; i < 5; i++) {
+//
+//                    sh = Runtime.getRuntime().exec("su", null,null);
+//                    os = sh.getOutputStream();
+//
+////                    os.write(("input tap 1120 750").getBytes("ASCII"));
+//                    os.write((cmd).getBytes("ASCII"));
+//
+//                    //Log.e("cmd", cmd);
+//
+//                    os.flush();
+//                    os.close();
+//
+//                    sh.waitFor();
+//
+//                    Thread.sleep(500);
+//                }
+//
+//            }
+//        }
+//        catch (Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//    }
 }
