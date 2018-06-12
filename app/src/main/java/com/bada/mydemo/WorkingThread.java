@@ -16,6 +16,9 @@ public class WorkingThread extends Thread{
 
             while (true) {
 
+                if(!shouldRun)
+                    break;
+
                 if(shouldClick()) {
                     click();
 
@@ -104,5 +107,10 @@ public class WorkingThread extends Thread{
         }
 
         return false;
+    }
+
+    boolean shouldRun = true;
+    public void setStop() {
+        shouldRun = false;
     }
 }

@@ -26,8 +26,12 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
 
-                if(workingThread != null) {
-                    workingThread.destroy();
+                try {
+                    if(workingThread != null) {
+                        workingThread.setStop();
+                    }
+                }catch (Throwable e){
+                    e.printStackTrace();
                 }
                 workingThread = new WorkingThread();
                 workingThread.start();
