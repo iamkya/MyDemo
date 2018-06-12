@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class MainActivity extends Activity {
 
-
+    WorkingThread workingThread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +26,11 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
 
-                new WorkingThread().start();
+                if(workingThread != null) {
+                    workingThread.destroy();
+                }
+                workingThread = new WorkingThread();
+                workingThread.start();
             }
         });
     }
