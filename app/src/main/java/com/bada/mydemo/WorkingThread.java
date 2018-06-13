@@ -50,7 +50,7 @@ public class WorkingThread extends Thread{
 //                    os.write(("input tap 1120 750").getBytes("ASCII"));
             os.write((cmd).getBytes("ASCII"));
 
-            Log.e("cmd", cmd);
+//            Log.e("cmd", cmd);
 
             os.flush();
             os.close();
@@ -96,7 +96,7 @@ public class WorkingThread extends Thread{
 
             Bitmap screen = BitmapFactory.decodeFile("/sdcard/colorPickerTemp.png");
             int pixel = screen.getPixel(xcoord ,ycoord);
-            Log.e("cmd", "shouldClick = " + (pixel != -527361));
+//            Log.e("cmd", "shouldClick = " + (pixel != -527361));
 
             if(pixel != -527361){
                 return true;
