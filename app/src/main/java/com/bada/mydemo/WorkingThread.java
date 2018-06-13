@@ -22,7 +22,7 @@ public class WorkingThread extends Thread{
                 if(shouldClick()) {
                     click();
 
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 }else{
 
                     Thread.sleep(getSleepTime() * 1000);
