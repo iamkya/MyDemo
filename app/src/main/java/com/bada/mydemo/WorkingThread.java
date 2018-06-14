@@ -2,7 +2,7 @@ package com.bada.mydemo;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
+
 
 import java.io.OutputStream;
 import java.util.Random;
@@ -50,7 +50,7 @@ public class WorkingThread extends Thread{
 //                    os.write(("input tap 1120 750").getBytes("ASCII"));
             os.write((cmd).getBytes("ASCII"));
 
-//            Log.e("cmd", cmd);
+//            DebugUtil.e("cmd", cmd);
 
             os.flush();
             os.close();
@@ -96,7 +96,7 @@ public class WorkingThread extends Thread{
 
             Bitmap screen = BitmapFactory.decodeFile("/sdcard/colorPickerTemp.png");
             int pixel = screen.getPixel(xcoord ,ycoord);
-//            Log.e("cmd", "shouldClick = " + (pixel != -527361));
+//            DebugUtil.e("cmd", "shouldClick = " + (pixel != -527361));
 
             if(pixel != -527361){
                 return true;
@@ -113,4 +113,7 @@ public class WorkingThread extends Thread{
     public void setStop() {
         shouldRun = false;
     }
+
+
+
 }
