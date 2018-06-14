@@ -16,6 +16,8 @@ import java.util.Random;
 
 public class MainActivity extends Activity {
 
+    //cd C:\games\Nox\bin && nox_adb.exe connect 127.0.0.1:62001
+
     WorkingThread workingThread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
