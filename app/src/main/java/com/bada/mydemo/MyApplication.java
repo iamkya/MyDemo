@@ -9,6 +9,7 @@ import java.io.File;
 import static com.bada.mydemo.OCRManager.TESSBASE_PATH;
 
 public class MyApplication extends Application {
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -17,14 +18,19 @@ public class MyApplication extends Application {
 
             ContextModel.getInstance().setContext(this);
 
-            OCRManager.getInstance().init();
+            File folder = new File(TESSBASE_PATH + "/tessdata");
 
-            File folder = new File(TESSBASE_PATH);
+            DebugUtil.e("folder " + folder.getAbsolutePath());
             if(!folder.exists()) {
                 folder.mkdirs();
 
                 new AssetCopier(this).copy("chi_sim.traineddata", folder);
+                new AssetCopier(this).copy("eng.traineddata", folder);
             }
+
+            OCRManager.getInstance().init();
+
+
 
         }catch (Throwable e){
             e.printStackTrace();
