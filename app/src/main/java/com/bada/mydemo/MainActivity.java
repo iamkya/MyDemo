@@ -19,25 +19,28 @@ public class MainActivity extends Activity {
     //cd C:\games\Nox\bin && nox_adb.exe connect 127.0.0.1:62001
 
     WorkingThread workingThread;
+    BadaThread badaThread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                try {
-                    if(workingThread != null) {
-                        workingThread.setStop();
-                    }
-                }catch (Throwable e){
-                    e.printStackTrace();
-                }
-                workingThread = new WorkingThread();
-                workingThread.start();
+//                try {
+//                    if(workingThread != null) {
+//                        workingThread.setStop();
+//                    }
+//                }catch (Throwable e){
+//                    e.printStackTrace();
+//                }
+//                workingThread = new WorkingThread();
+//                workingThread.start();
+
+                badaThread = new BadaThread();
+                badaThread.start();
             }
         });
     }
