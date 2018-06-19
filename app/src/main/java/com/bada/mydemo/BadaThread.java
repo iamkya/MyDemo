@@ -11,8 +11,10 @@ import android.os.Environment;
 
 import com.bada.mydemo.rect.FocusRect;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 public class BadaThread extends Thread {
@@ -20,19 +22,24 @@ public class BadaThread extends Thread {
     Process shell = null;
 
     private static final String screen_cap_path = "/sdcard/colorPickerTemp.png";
-    private static final String screen_test_path = "/sdcard/bada/main2.jpg";
+    //private static final String screen_test_path = "/sdcard/bada/main2.jpg";
 
     @Override
     public void run() {
 
         try {
-            shell = Runtime.getRuntime().exec("gtsu", null,null);
+            shell = Runtime.getRuntime().exec("su", null,null);
+            os = new DataOutputStream(shell.getOutputStream());
+            is = shell.getInputStream();
 
-            //while (true) {
+            while (true) {
 
+                Thread.sleep(15 * 1000 );
+
+                capture();
                 findStr();
 
-            //}
+            }
 
         }catch (Throwable e){
             e.printStackTrace();
@@ -42,28 +49,36 @@ public class BadaThread extends Thread {
     }
 
     static final FocusRect friendInfo = new FocusRect(0, 0, 1000, 200);
+    DataOutputStream os = null;
+    InputStream is = null;
 
-//    boolean capture() {
-//        try {
-//            OutputStream os = null;
-//
-//            os = shell.getOutputStream();
-//            os.write(("/system/bin/screencap -p " + screen_cap_path).getBytes("ASCII"));
-//            os.flush();
-//
-//            os.close();
-//            shell.waitFor();
-//
+    boolean capture() {
+        try {
+
+            os.writeBytes(("/system/bin/screencap -p " + screen_cap_path));
+            os.writeBytes("\n");
+            os.flush();
+
+            //TODO find better ways ??
+            /*quote"of course, this assumes that no other command would output anything to the shell's
+            stdout stream (still works if another command outputs anything to the shell's stderr stream) "
+            */
+
+            os.writeBytes("echo -n 0\n");
+            os.flush();
+
+            is.read();
+
 //            Bitmap screen = BitmapFactory.decodeFile(screen_cap_path);
-//
+
 //            Bitmap part = getPart(screen);
-//
-//        }catch (Throwable e) {
-//            e.printStackTrace();
-//        }
-//
-//        return false;
-//    }
+
+        }catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
     ColorMatrix colorMatrix;
 
@@ -83,14 +98,14 @@ public class BadaThread extends Thread {
 
 
     boolean findStr() {
-        Bitmap screen = BitmapFactory.decodeFile(screen_test_path);
+        Bitmap screen = BitmapFactory.decodeFile(screen_cap_path);
 
         Rect rect = new Rect(1300, 0, 1920, 75 + 130);
 
         Bitmap part = getPart(screen, rect);
 
-//        Bitmap grey = convertGray(part);
-        Bitmap grey = part;
+        Bitmap grey = convertGray(part);
+//        Bitmap grey = part;
 
         try {
             File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "part.jpg");

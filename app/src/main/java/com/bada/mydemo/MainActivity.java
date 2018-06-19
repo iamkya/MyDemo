@@ -36,11 +36,11 @@ public class MainActivity extends Activity {
 //                }catch (Throwable e){
 //                    e.printStackTrace();
 //                }
-//                workingThread = new WorkingThread();
-//                workingThread.start();
+                workingThread = new WorkingThread();
+                workingThread.start();
 
-                badaThread = new BadaThread();
-                badaThread.start();
+//                badaThread = new BadaThread();
+//                badaThread.start();
             }
         });
     }
