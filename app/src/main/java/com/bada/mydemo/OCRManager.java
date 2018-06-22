@@ -33,6 +33,8 @@ public class OCRManager {
         baseApi.init(TESSBASE_PATH, "chi_sim");
 //        baseApi.init(TESSBASE_PATH, "eng");
 //        baseApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_BLOCK);
+//        baseApi.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "/.,0123456789");
+        baseApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_LINE);
     }
 
     public String doOcr(Bitmap bitmap, Rect rect) {
@@ -64,6 +66,46 @@ public class OCRManager {
         return null;
     }
 
+    public void setImage(Bitmap bitmap) {
+        baseApi.setImage(bitmap);
+    }
+
+    public String doOcrRect(Rect rect){
+        return doOcrRect(rect, false);
+    }
+
+    public String doOcrRect(Rect rect, boolean isNumber) {
+
+        if(isNumber){
+            baseApi.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "0123456789");
+        }
+
+        baseApi.setRectangle(rect);
+        String text= baseApi.getUTF8Text();
+        return text;
+    }
+
+    public void getWords(Bitmap bitmap) {
+        try {
+            if(bitmap == null)
+                return;
+
+            baseApi.setImage(bitmap);
+            baseApi.getWords();
+
+
+//            final String hOcr = baseApi.getHOCRText(0);
+//            final String outputText = Html.fromHtml(hOcr).toString().trim();
+//
+
+
+            baseApi.clear();
+
+        }catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+    }
 //    public String doOcrRect(Bitmap bitmap, Rect rect) {
 //
 //        try {

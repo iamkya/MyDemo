@@ -9,13 +9,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Environment;
 
-import com.bada.mydemo.rect.FocusRect;
+import com.bada.mydemo.dataType.FocusRect;
 
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 public class BadaThread extends Thread {
 

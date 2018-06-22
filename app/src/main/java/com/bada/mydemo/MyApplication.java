@@ -4,6 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 
+import org.opencv.android.InstallCallbackInterface;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+
 import java.io.File;
 
 import static com.bada.mydemo.OCRManager.TESSBASE_PATH;
@@ -31,6 +35,20 @@ public class MyApplication extends Application {
             OCRManager.getInstance().init();
 
 
+            boolean initAsync = OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, new LoaderCallbackInterface() {
+                @Override
+                public void onManagerConnected(int status) {
+
+                    DebugUtil.e("OpenCVLoader onManagerConnected " + status);
+                }
+
+                @Override
+                public void onPackageInstall(int operation, InstallCallbackInterface callback) {
+
+                    DebugUtil.e("OpenCVLoader onPackageInstall " + operation);
+                }
+            });
+            DebugUtil.e("OpenCVLoader init result " + initAsync);
 
         }catch (Throwable e){
             e.printStackTrace();

@@ -20,6 +20,9 @@ public class MainActivity extends Activity {
 
     WorkingThread workingThread;
     BadaThread badaThread;
+    OpenThread openThread;
+    ClickThread clickThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,11 +39,17 @@ public class MainActivity extends Activity {
 //                }catch (Throwable e){
 //                    e.printStackTrace();
 //                }
-                workingThread = new WorkingThread();
-                workingThread.start();
+//                workingThread = new WorkingThread();
+//                workingThread.start();
+
+                openThread = new OpenThread();
+                openThread.start();
 
 //                badaThread = new BadaThread();
 //                badaThread.start();
+
+//                clickThread = new ClickThread();
+//                clickThread.start();
             }
         });
     }
