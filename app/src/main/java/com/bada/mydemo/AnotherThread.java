@@ -34,18 +34,24 @@ public class AnotherThread extends BaseThread {
         }
     }
 
-    void checkExpedition() throws Exception{
+    private void checkExpedition() throws Exception{
 
-
+        int i = 0;
         while (true) {
 
-            if(shouldClick())
+            if(shouldClick()) {
+                i = 0;
                 click2(comfirmExpedition);
+            }
             else{
                 sleep(getSleepTime() * 1000);
+                i++;
+            }
+
+            if(i > 11) {
+                break;
             }
         }
-
     }
 
 
