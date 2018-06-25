@@ -22,14 +22,14 @@ public class OpenThread extends Thread {
     DataOutputStream os = null;
     InputStream is = null;
 
-    private static final String screen_group1 = "/sdcard/bada/group1.jpg";
+    private static final String screen_group1 = "/sdcard/bada/group1.png";
 
     @Override
     public void run() {
 
         try {
 
-            shell = Runtime.getRuntime().exec("gtsu", null,null);
+            shell = Runtime.getRuntime().exec("su", null,null);
             os = new DataOutputStream(shell.getOutputStream());
             is = shell.getInputStream();
 
@@ -88,9 +88,9 @@ public class OpenThread extends Thread {
                     String outputfile = "/sdcard/trovato.png";
                     Imgcodecs.imwrite(outputfile,rgb);
 
-                    DebugUtil.e("111222333444");
                 }
 
+                DebugUtil.e("111222333444");
 
                 break;
             }

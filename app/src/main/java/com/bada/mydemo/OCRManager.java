@@ -77,7 +77,9 @@ public class OCRManager {
     public String doOcrRect(Rect rect, boolean isNumber) {
 
         if(isNumber){
-            baseApi.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "0123456789");
+            baseApi.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "/0123456789");
+            baseApi.setVariable("classify_bln_numeric_mode", "1");
+
         }
 
         baseApi.setRectangle(rect);

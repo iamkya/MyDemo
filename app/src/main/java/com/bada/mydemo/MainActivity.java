@@ -22,11 +22,16 @@ public class MainActivity extends Activity {
     BadaThread badaThread;
     OpenThread openThread;
     ClickThread clickThread;
+    AnotherThread anotherThread;
+
+    public static MainActivity mainActivity = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainActivity = this;
 
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,14 +47,16 @@ public class MainActivity extends Activity {
 //                workingThread = new WorkingThread();
 //                workingThread.start();
 
-                openThread = new OpenThread();
-                openThread.start();
+//                openThread = new OpenThread();
+//                openThread.start();
 
 //                badaThread = new BadaThread();
 //                badaThread.start();
 
 //                clickThread = new ClickThread();
 //                clickThread.start();
+                anotherThread = new AnotherThread();
+                anotherThread.start();
             }
         });
     }
@@ -99,4 +106,11 @@ public class MainActivity extends Activity {
 //            e.printStackTrace();
 //        }
 //    }
+
+
+    @Override
+    protected void onDestroy() {
+        mainActivity = null;
+        super.onDestroy();
+    }
 }
