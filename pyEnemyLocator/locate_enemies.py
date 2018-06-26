@@ -56,18 +56,13 @@ def findn(small, big, std_factor = 5):
     # Apply template Matching
     res = cv.matchTemplate(img,template,method)
 
-    min_val, max_val, min_loc, max_loc = cv.minMaxLoc(res)
     flattened = res.flatten()
 
     std, mean = np.std(flattened), np.mean(flattened)
 
     threshold = mean + std * std_factor
     loc = np.where(res > threshold)
-    # If the method is TM_SQDIFF or TM_SQDIFF_NORMED, take minimum
-    # if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
-    #     top_left = min_loc
-    # else:
-    #     top_left = max_loc
+
     existing = []
     result = []
     radius = np.linalg.norm(np.array([w, h]))
