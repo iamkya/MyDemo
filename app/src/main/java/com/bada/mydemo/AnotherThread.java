@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.bada.mydemo.dataType.RandomRect;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 public class AnotherThread extends BaseThread {
 
@@ -20,18 +21,17 @@ public class AnotherThread extends BaseThread {
 
         try {
 
+            sleep(15 * 1000);
 
-//            sleep(15 * 1000);
-//
-//            while (true) {
-//
-//                checkExpedition(false);
-//
-//                checkExpedition(true);
-//
-                startCombat();
-//            }
+            while (true) {
 
+                checkExpedition(false);
+
+                boolean b = startCombat();
+
+                if(b)
+                    break;
+            }
         }catch (Throwable e) {
             e.printStackTrace();
         }
@@ -51,17 +51,88 @@ public class AnotherThread extends BaseThread {
     private RandomRect selectGroup1AtDeploy = new RandomRect();
     private RandomRect selectGroup2AtDeploy = new RandomRect();
 
-    void startCombat(){
+    private RandomRect selectGroup1AtFormation = new RandomRect();
+    private RandomRect selectGroup2AtFormation = new RandomRect();
+
+    private RandomRect savedFormationAtGroupDetail = new RandomRect();
+    private RandomRect savedFormationRect = new RandomRect();
+
+    private RandomRect formation1 = new RandomRect();
+    private RandomRect formation2 = new RandomRect();
+
+    private RandomRect applyFormationButton = new RandomRect();
+
+    private RandomRect forceApplyDialogButton = new RandomRect();
+    private RandomRect formationBackButton = new RandomRect();
+
+    private RandomRect deployConfirmButton = new RandomRect();
+
+    private RandomRect startBattleButton = new RandomRect();
+
+    private RandomRect supplyButton = new RandomRect();
+
+    private RandomRect planModeButton = new RandomRect();
+
+    private RandomRect enemy1 = new RandomRect();
+    private RandomRect enemy2 = new RandomRect();
+    private RandomRect empty1 = new RandomRect();
+    private RandomRect enemy3 = new RandomRect();
+
+    private RandomRect enemy4 = new RandomRect();
+    private RandomRect enemy5 = new RandomRect();
+
+    private RandomRect endRound = new RandomRect();//结束回合
+
+    private RandomRect execPlanButton = new RandomRect();
+
+    boolean startCombat() throws Throwable{
+        prepareCombat();
 
         for (int i = 0; i < maxCombatCount ; i ++) {
 
             doCombat(i);
+
+            checkExpedition(false);
         }
 
+        return true;
+    }
+
+    ArrayList<RandomRect> fight1 = new ArrayList<>();
+    ArrayList<RandomRect> fight2 = new ArrayList<>();
+
+
+    void prepareGroup1(){
+        fight1.clear();
+
+        fight1.add(selectGroup1AtDeploy);
+        fight1.add(groupFormationRect);
+        fight1.add(savedFormationAtGroupDetail);
+        fight1.add(savedFormationRect);
+        fight1.add(formation2);
+        fight1.add(applyFormationButton);
+        fight1.add(forceApplyDialogButton);
 
     }
 
-    private void doCombat(int index) {
+    void prepareGroup2(){
+        fight2.clear();
+
+        fight2.add(selectGroup2AtDeploy);
+        fight2.add(groupFormationRect);
+        fight2.add(savedFormationAtGroupDetail);
+        fight2.add(savedFormationRect);
+        fight2.add(formation1);
+        fight2.add(applyFormationButton);
+        fight2.add(forceApplyDialogButton);
+    }
+
+    void prepareCombat() {
+        prepareGroup1();
+        prepareGroup2();
+    }
+
+    private void doCombat(int index) throws Throwable{
 
         click2(combatRect);
 
@@ -69,15 +140,104 @@ public class AnotherThread extends BaseThread {
 
         click2(normalCombatRect);
 
+        //已经进入地图
+
         click2(startPointRightRect);//点机场
 
-        //弹出队伍选择
-        click2(groupFormationRect);
+        int fightGroup = index % 2;
 
-        int fightGroup = index%2;
-        int waitGroup = (index + 1)%2;
+        if(fightGroup == 0) {
+
+            performPrepareAndDeploy(fight1, fightGroup);
+
+        }else{
+
+            performPrepareAndDeploy(fight2, fightGroup);
+        }
+
+        //then battle should start
+        battleBegan(index);
+    }
+
+    void battleBegan(int index) throws Throwable{
+
+        click2(startBattleButton);
+
+        click2(startPointLeftRect);
+        click2(supplyButton);
+
+        if(index == 0){
+            click2(startPointRightRect);
+        }
+
+        click2(planModeButton);
+
+        click2(startPointRightRect);//机场
+
+        click2(enemy1);
+        click2(enemy2);
+
+        //TODO drag
+        exec("input swipe ");
+
+        click2(empty1);
+        click2(enemy3);
+
+        click2(execPlanButton);
+
+        sleep(60 * 1000);
 
 
+        click2(endRound);
+        sleep(20 * 1000);
+
+
+        click2(planModeButton);
+
+        click2(enemy3);
+        click2(enemy4);
+        click2(enemy5);
+        click2(execPlanButton);
+
+        sleep(40 * 1000);
+
+        click2(endRound);
+    }
+
+
+    void performPrepareAndDeploy(ArrayList<RandomRect> rectArrayList, int fightGroup){
+
+        for(RandomRect rect : rectArrayList){
+
+            click2(rect);
+        }
+
+        if(fightGroup == 0) {
+            click2(selectGroup2AtFormation);
+        }else{
+            click2(selectGroup1AtFormation);
+        }
+
+        //TODO drag
+        exec("input swipe ");
+
+        click2(formationBackButton);
+
+        if(fightGroup == 0) {
+
+            click2(startPointRightRect);
+            click2(deployConfirmButton);
+
+            click2(startPointLeftRect);
+            click2(deployConfirmButton);
+        }else{
+
+            click2(startPointLeftRect);
+            click2(deployConfirmButton);
+
+            click2(startPointRightRect);
+            click2(deployConfirmButton);
+        }
     }
 
     private void checkExpedition(boolean keepChecking) throws Exception{
@@ -90,11 +250,11 @@ public class AnotherThread extends BaseThread {
                 click2(confirmExpedition);
             }
             else{
-                sleep(getSleepTime() * 1000);
+                sleep(1000);
                 i++;
             }
 
-            if(!keepChecking && i > 11) {
+            if(!keepChecking && i > 6) {
                 break;
             }
         }
