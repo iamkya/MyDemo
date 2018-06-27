@@ -20,7 +20,7 @@ public class BaseThread extends Thread {
             MainActivity.mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(MainActivity.mainActivity, str, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.mainActivity, str, Toast.LENGTH_LONG).show();
                 }
             });
         }

@@ -44,8 +44,8 @@ public class MainActivity extends Activity {
 //                }catch (Throwable e){
 //                    e.printStackTrace();
 //                }
-//                workingThread = new WorkingThread();
-//                workingThread.start();
+                workingThread = new WorkingThread();
+                workingThread.start();
 
 //                openThread = new OpenThread();
 //                openThread.start();
@@ -55,8 +55,8 @@ public class MainActivity extends Activity {
 
 //                clickThread = new ClickThread();
 //                clickThread.start();
-                anotherThread = new AnotherThread();
-                anotherThread.start();
+//                anotherThread = new AnotherThread();
+//                anotherThread.start();
             }
         });
     }

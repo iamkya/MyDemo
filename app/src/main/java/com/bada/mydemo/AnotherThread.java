@@ -25,7 +25,7 @@ public class AnotherThread extends BaseThread {
 
             while (true) {
 
-                checkExpedition(false);
+                checkExpedition(true);
 
                 boolean b = startCombat();
 
@@ -163,22 +163,28 @@ public class AnotherThread extends BaseThread {
 
         click2(startBattleButton);
 
-        click2(startPointLeftRect);
+        click1(startPointLeftRect);
+        click1(startPointLeftRect);
         click2(supplyButton);
 
-        if(index == 0){
-            click2(startPointRightRect);
-        }
+//        if(index == 0){
+//            click1(startPointRightRect);
+//            click1(startPointRightRect);
+//            click2(supplyButton);
+//        }
+
+        click2(startPointRightRect);//reset selected group...
 
         click2(planModeButton);
 
-        click2(startPointRightRect);//机场
+        //click2(startPointRightRect);//机场
 
         click2(enemy1);
-        click2(enemy2);
 
         //TODO drag
-        exec("input swipe ");
+        exec("input swipe 1338 208 1338 908");
+
+        click2(enemy2);
 
         click2(empty1);
         click2(enemy3);
@@ -250,8 +256,12 @@ public class AnotherThread extends BaseThread {
                 click2(confirmExpedition);
             }
             else{
-                sleep(1000);
-                i++;
+                if(keepChecking) {
+                    sleep(getSleepTime() * 1000);
+                }else{
+                    sleep(1000);
+                    i++;
+                }
             }
 
             if(!keepChecking && i > 6) {
@@ -282,7 +292,7 @@ public class AnotherThread extends BaseThread {
         }catch (Throwable e) {
             e.printStackTrace();
         }
-        toast("no click");
+        toast("NO click");
         return false;
     }
 
