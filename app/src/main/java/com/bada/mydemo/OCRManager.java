@@ -7,6 +7,7 @@ import android.text.Html;
 
 import com.googlecode.leptonica.android.Pix;
 import com.googlecode.leptonica.android.Pixa;
+import com.googlecode.tesseract.android.ResultIterator;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
 import java.net.URLEncoder;
@@ -30,11 +31,12 @@ public class OCRManager {
     TessBaseAPI baseApi = null;
     public void init() {
         baseApi = new TessBaseAPI();
-        baseApi.init(TESSBASE_PATH, "chi_sim");
+        baseApi.init(TESSBASE_PATH, "eng+chi_sim+Mohave");
+        baseApi.setVariable("OMP_THREAD_LIMIT", "4");
 //        baseApi.init(TESSBASE_PATH, "eng");
 //        baseApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_BLOCK);
 //        baseApi.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "/.,0123456789");
-        baseApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_LINE);
+        //baseApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_LINE);
     }
 
     public String doOcr(Bitmap bitmap, Rect rect) {
@@ -93,16 +95,32 @@ public class OCRManager {
                 return;
 
             baseApi.setImage(bitmap);
-            baseApi.getWords();
+
+            baseApi.getUTF8Text();
+
+            ResultIterator resultIterator = null;
+
+            resultIterator = baseApi.getResultIterator();
+            resultIterator.begin();
 
 
-//            final String hOcr = baseApi.getHOCRText(0);
-//            final String outputText = Html.fromHtml(hOcr).toString().trim();
-//
+            do {
+                String word = resultIterator.getUTF8Text(TessBaseAPI.PageIteratorLevel.RIL_WORD);
+                Rect rect = resultIterator.getBoundingRect(TessBaseAPI.PageIteratorLevel.RIL_WORD);
+                double confidence = resultIterator.confidence(TessBaseAPI.PageIteratorLevel.RIL_WORD);
 
+                if (word == null
+                        || !rect.intersects(0, 0, bitmap.getWidth(), bitmap.getHeight())) {
 
-            baseApi.clear();
+                    // No results return invalid rect, check for this case and continue
+                    continue;
+                }
 
+                DebugUtil.e("word:" + word + " rect:" + rect);
+
+            } while (resultIterator.next(TessBaseAPI.PageIteratorLevel.RIL_WORD));
+
+            DebugUtil.e("e.printStackTrace();");
         }catch (Throwable e) {
             e.printStackTrace();
         }

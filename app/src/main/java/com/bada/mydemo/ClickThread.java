@@ -42,14 +42,14 @@ public class ClickThread extends Thread {
     DataOutputStream os = null;
     InputStream is = null;
 
-    private static final String screen_group1 = "/sdcard/bada/group1.png";
+    private static final String screen_group1 = "/sdcard/bada/group2.jpg";
 
     @Override
     public void run() {
 
         try {
 
-            shell = Runtime.getRuntime().exec("su", null,null);
+            shell = Runtime.getRuntime().exec("gtsu", null,null);
             os = new DataOutputStream(shell.getOutputStream());
             is = shell.getInputStream();
 
@@ -100,58 +100,62 @@ public class ClickThread extends Thread {
         Bitmap gray = convertGray(gunInfo1.getBitmap());
 //        Bitmap gray = gunInfo1.getBitmap();
 
-        OCRManager.getInstance().setImage(gray);
-
-        Rect rect = new Rect(0, 441, 260, 474); //name
-        String str1 = OCRManager.getInstance().doOcrRect(rect);
-        DebugUtil.e("str1 " + str1);
-
-        Rect rect1 = new Rect(rect.left, rect.top + 33, rect.right, rect.bottom + 33); //type
-        String str2 = OCRManager.getInstance().doOcrRect(rect1);
-        DebugUtil.e("str2 " + str2);
-
-        Rect life = new Rect(0, 525, 82, 565); //life
-        String slife = OCRManager.getInstance().doOcrRect(life);
-        DebugUtil.e("slife " + slife);
-
-        Rect lifeNumber = new Rect(82, 525, 260, 555);
-        String sln = OCRManager.getInstance().doOcrRect(lifeNumber, true);
-        DebugUtil.e("sln " + sln);
-
-        Bitmap bln = Bitmap.createBitmap(gray, 82,525,260-82,565-525-10);
-        try {
-            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "mypart.jpg");
-            FileOutputStream fo = new FileOutputStream(file);
-
-            bln.compress(Bitmap.CompressFormat.PNG, 100, fo);
-            fo.flush();
-            fo.close();
-
-        }catch (Throwable e) {
-            e.printStackTrace();
-        }
+        OCRManager.getInstance().getWords(convertGray(screen));
+//        OCRManager.getInstance().setImage(gray);
+//
+//        Rect rect = new Rect(0, 441, 260, 474); //name
+//        String str1 = OCRManager.getInstance().doOcrRect(rect);
+//        DebugUtil.e("str1 " + str1);
+//
+//        Rect rect1 = new Rect(rect.left, rect.top + 33, rect.right, rect.bottom + 33); //type
+//        String str2 = OCRManager.getInstance().doOcrRect(rect1);
+//        DebugUtil.e("str2 " + str2);
+//
+//        Rect life = new Rect(0, 525, 82, 565); //life
+//        String slife = OCRManager.getInstance().doOcrRect(life);
+//        DebugUtil.e("slife " + slife);
+//
+//        Rect lifeNumber = new Rect(82, 525, 260, 555);
+//        String sln = OCRManager.getInstance().doOcrRect(lifeNumber, false);
+//        DebugUtil.e("sln " + sln);
+//
+//        Rect fullLine = new Rect(0, 525, 260, 555);
+//        String sfullLine = OCRManager.getInstance().doOcrRect(fullLine, false);
+//        DebugUtil.e("sfullLine = " + sfullLine);
+//        Bitmap bln = Bitmap.createBitmap(gray, 0,525,260,565-525-10);
+//        try {
+//            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "mypart.jpg");
+//            FileOutputStream fo = new FileOutputStream(file);
+//
+//            bln.compress(Bitmap.CompressFormat.PNG, 100, fo);
+//            fo.flush();
+//            fo.close();
+//
+//        }catch (Throwable e) {
+//            e.printStackTrace();
+//        }
 
     }
 
     ColorMatrix colorMatrix;
 
     public Bitmap convertGray(Bitmap srcBitmap) {
-//        colorMatrix = new ColorMatrix();
-//        colorMatrix.setSaturation(0);
-//        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
-//
-//        Paint paint = new Paint();
-//        paint.setColorFilter(filter);
-//        Bitmap grayBitmap = Bitmap.createBitmap(srcBitmap.getWidth(), srcBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-//        Canvas canvas = new Canvas(grayBitmap);
-//
-//        canvas.drawBitmap(srcBitmap, 0, 0, paint);
-        Mat rgbMat = new Mat();
-        Mat grayMat = new Mat();
+        colorMatrix = new ColorMatrix();
+        colorMatrix.setSaturation(0);
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
+
+        Paint paint = new Paint();
+        paint.setColorFilter(filter);
         Bitmap grayBitmap = Bitmap.createBitmap(srcBitmap.getWidth(), srcBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Utils.bitmapToMat(srcBitmap, rgbMat);//convert original bitmap to Mat, R G B.
-        Imgproc.cvtColor(rgbMat, grayMat, Imgproc.COLOR_RGB2GRAY);//rgbMat to gray grayMat
-        Utils.matToBitmap(grayMat, grayBitmap);
+        Canvas canvas = new Canvas(grayBitmap);
+
+        canvas.drawBitmap(srcBitmap, 0, 0, paint);
+//        Mat rgbMat = new Mat();
+//        Mat grayMat = new Mat();
+//        Bitmap grayBitmap = Bitmap.createBitmap(srcBitmap.getWidth(), srcBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+//        Utils.bitmapToMat(srcBitmap, rgbMat);//convert original bitmap to Mat, R G B.
+//        Imgproc.cvtColor(rgbMat, grayMat, Imgproc.COLOR_RGB2GRAY);//rgbMat to gray grayMat
+//        Utils.matToBitmap(grayMat, grayBitmap);
         return grayBitmap;
     }
 

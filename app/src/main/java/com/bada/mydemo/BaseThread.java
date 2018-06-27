@@ -98,4 +98,11 @@ public class BaseThread extends Thread {
     void click2(RandomRect rect) {
         click(rect, 2);
     }
+
+    void click2(RandomRect... rects){
+
+        for(RandomRect rect:rects){
+            click2(rect);
+        }
+    }
 }

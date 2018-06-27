@@ -30,6 +30,7 @@ public class MyApplication extends Application {
 
                 new AssetCopier(this).copy("chi_sim.traineddata", folder);
                 new AssetCopier(this).copy("eng.traineddata", folder);
+                new AssetCopier(this).copy("Mohave.traineddata", folder);
             }
 
             OCRManager.getInstance().init();
