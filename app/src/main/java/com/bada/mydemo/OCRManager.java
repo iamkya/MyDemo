@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.googlecode.tesseract.android.TessBaseAPI.OEM_TESSERACT_CUBE_COMBINED;
 import static com.googlecode.tesseract.android.TessBaseAPI.OEM_TESSERACT_ONLY;
 
 public class OCRManager {
@@ -31,11 +32,11 @@ public class OCRManager {
     TessBaseAPI baseApi = null;
     public void init() {
         baseApi = new TessBaseAPI();
-        baseApi.init(TESSBASE_PATH, "eng+chi_sim+Mohave");
-        baseApi.setVariable("OMP_THREAD_LIMIT", "4");
+        baseApi.init(TESSBASE_PATH, "chi_sim+Mohave");
 //        baseApi.init(TESSBASE_PATH, "eng");
 //        baseApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_BLOCK);
 //        baseApi.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "/.,0123456789");
+//        baseApi.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "支援梯队");
         //baseApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_LINE);
     }
 
@@ -95,6 +96,7 @@ public class OCRManager {
                 return;
 
             baseApi.setImage(bitmap);
+            baseApi.setRectangle(0, 0, 258, 1080);
 
             baseApi.getUTF8Text();
 

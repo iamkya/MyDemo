@@ -42,7 +42,7 @@ public class ClickThread extends Thread {
     DataOutputStream os = null;
     InputStream is = null;
 
-    private static final String screen_group1 = "/sdcard/bada/group2.jpg";
+    public static final String screen_group1 = "/sdcard/bada/group1.jpg";
 
     @Override
     public void run() {
@@ -100,7 +100,7 @@ public class ClickThread extends Thread {
         Bitmap gray = convertGray(gunInfo1.getBitmap());
 //        Bitmap gray = gunInfo1.getBitmap();
 
-        OCRManager.getInstance().getWords(convertGray(screen));
+        OCRManager.getInstance().getWords(screen);
 //        OCRManager.getInstance().setImage(gray);
 //
 //        Rect rect = new Rect(0, 441, 260, 474); //name
