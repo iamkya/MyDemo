@@ -1,6 +1,6 @@
 package com.bada.mydemo.dataType;
 
-import java.util.Random;
+        import java.util.Random;
 
 public class RandomRect extends FocusRect{
 
@@ -10,6 +10,20 @@ public class RandomRect extends FocusRect{
 
     public RandomRect(int topX, int topY, int width, int height) {
         super(topX, topY, width, height);
+    }
+
+    public RandomRect(int topX, int topY, int width, int height, String tag) {
+        super(topX, topY, width, height);
+        this.tag = tag;
+    }
+
+    String tag;
+
+    public String getTag(){
+        if(tag != null)
+            return tag;
+
+        return "";
     }
 
     public String getClickPoint() {

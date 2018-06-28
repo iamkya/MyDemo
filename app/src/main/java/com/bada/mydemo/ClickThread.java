@@ -22,7 +22,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class ClickThread extends Thread {
+public class ClickThread extends BaseThread {
 
     private RandomRect combactRect = new RandomRect();
     private RandomRect zeroTwoRect = new RandomRect();
@@ -37,33 +37,16 @@ public class ClickThread extends Thread {
     private RandomRect selectGroup2AtDeploy = new RandomRect();
 
 
-
-    Process shell = null;
-    DataOutputStream os = null;
-    InputStream is = null;
-
-    private static final String screen_group1 = "/sdcard/bada/group2.jpg";
+//    private static final String screen_group1 = "/sdcard/bada/group2.jpg";
 
     @Override
     public void run() {
 
         try {
 
-            shell = Runtime.getRuntime().exec("gtsu", null,null);
-            os = new DataOutputStream(shell.getOutputStream());
-            is = shell.getInputStream();
 
             while (true) {
 
-//                click2(combactRect);
-
-//                click2(zeroTwoRect);
-
-//                click2(normalCombatRect);
-
-                //check which group has ammo
-
-                //first we need to check if this is main
                 checkAmmo();
 
                 break;
@@ -79,7 +62,9 @@ public class ClickThread extends Thread {
 
     void checkAmmo() {
 
-        Bitmap screen = BitmapFactory.decodeFile(screen_group1);
+        capture();
+
+        Bitmap screen = BitmapFactory.decodeFile(screen_cap_path);
 
         for (int i = 0; i < 5; i ++) {
 
@@ -97,8 +82,8 @@ public class ClickThread extends Thread {
 
         GunInfo gunInfo1 = gunInfos.get(0);
 
-        Bitmap gray = convertGray(gunInfo1.getBitmap());
-//        Bitmap gray = gunInfo1.getBitmap();
+//        Bitmap gray = convertGray(gunInfo1.getBitmap());
+        Bitmap gray = gunInfo1.getBitmap();
 
         OCRManager.getInstance().getWords(convertGray(screen));
 //        OCRManager.getInstance().setImage(gray);
@@ -157,46 +142,6 @@ public class ClickThread extends Thread {
 //        Imgproc.cvtColor(rgbMat, grayMat, Imgproc.COLOR_RGB2GRAY);//rgbMat to gray grayMat
 //        Utils.matToBitmap(grayMat, grayBitmap);
         return grayBitmap;
-    }
-
-    private void click(RandomRect rect) {
-
-        click(rect, 0.5f);
-    }
-
-    private void click2(RandomRect rect) {
-        click(rect, 2);
-    }
-
-    private void click(RandomRect rect, float waitTime) {
-
-        try {
-            String xy = rect.getClickPoint();
-
-            if(xy.equals("0 0"))
-                return;
-
-            String cmd = "input tap " + xy;
-
-            os.writeBytes((cmd));
-
-            os.writeBytes("\n");
-            os.flush();
-
-            //TODO find better ways ??
-            /*quote"of course, this assumes that no other command would output anything to the shell's
-            stdout stream (still works if another command outputs anything to the shell's stderr stream) "
-            */
-
-            os.writeBytes("echo -n 0\n");
-            os.flush();
-
-            is.read();
-
-            Thread.sleep((long)waitTime * 1000);
-        }catch (Throwable e){
-            e.printStackTrace();
-        }
     }
 
 }

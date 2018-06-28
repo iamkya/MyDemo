@@ -78,6 +78,9 @@ public class BaseThread extends Thread {
     }
 
     void click(RandomRect rect, int sleepTime) {
+
+        DebugUtil.e("clicking " + rect.getTag());
+
         String command = rect.getClickPoint();
         exec("input tap " + command);
 
@@ -99,10 +102,50 @@ public class BaseThread extends Thread {
         click(rect, 2);
     }
 
+    void click4(RandomRect rect) {
+        click(rect, 4);
+    }
+
+
+    void click3(RandomRect rect) {
+        click(rect, 3);
+    }
+
     void click2(RandomRect... rects){
 
         for(RandomRect rect:rects){
             click2(rect);
         }
     }
+
+    static final String screen_cap_path = "/sdcard/colorPickerTemp.png";
+
+    boolean capture() {
+        try {
+
+            os.writeBytes(("/system/bin/screencap -p " + screen_cap_path));
+            os.writeBytes("\n");
+            os.flush();
+
+            //TODO find better ways ??
+            /*quote"of course, this assumes that no other command would output anything to the shell's
+            stdout stream (still works if another command outputs anything to the shell's stderr stream) "
+            */
+
+            os.writeBytes("echo -n 0\n");
+            os.flush();
+
+            is.read();
+
+//            Bitmap screen = BitmapFactory.decodeFile(screen_cap_path);
+
+//            Bitmap part = getPart(screen);
+
+        }catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
 }

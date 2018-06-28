@@ -53,10 +53,10 @@ public class MainActivity extends Activity {
 //                badaThread = new BadaThread();
 //                badaThread.start();
 
-                clickThread = new ClickThread();
-                clickThread.start();
-//                anotherThread = new AnotherThread();
-//                anotherThread.start();
+//                clickThread = new ClickThread();
+//                clickThread.start();
+                anotherThread = new AnotherThread();
+                anotherThread.start();
             }
         });
     }
