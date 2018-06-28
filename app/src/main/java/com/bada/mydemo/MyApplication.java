@@ -4,6 +4,11 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 
+import com.baidu.ocr.sdk.OCR;
+import com.baidu.ocr.sdk.OnResultListener;
+import com.baidu.ocr.sdk.exception.OCRError;
+import com.baidu.ocr.sdk.model.AccessToken;
+
 import org.opencv.android.InstallCallbackInterface;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
@@ -31,10 +36,11 @@ public class MyApplication extends Application {
                 new AssetCopier(this).copy("chi_sim.traineddata", folder);
                 new AssetCopier(this).copy("eng.traineddata", folder);
                 new AssetCopier(this).copy("Mohave.traineddata", folder);
+                new AssetCopier(this).copy("jd.traineddata", folder);
             }
 
             OCRManager.getInstance().init();
-
+            OCRManager2.getInstance().init();
 
             boolean initAsync = OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, new LoaderCallbackInterface() {
                 @Override
@@ -54,5 +60,11 @@ public class MyApplication extends Application {
         }catch (Throwable e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onTerminate() {
+        ContextModel.getInstance().setContext(null);
+        super.onTerminate();
     }
 }

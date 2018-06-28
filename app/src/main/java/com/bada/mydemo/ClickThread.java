@@ -82,10 +82,10 @@ public class ClickThread extends BaseThread {
 
         GunInfo gunInfo1 = gunInfos.get(0);
 
-//        Bitmap gray = convertGray(gunInfo1.getBitmap());
-        Bitmap gray = gunInfo1.getBitmap();
+        Bitmap gray = convertGray(gunInfo1.getBitmap());
+//        Bitmap gray = gunInfo1.getBitmap();
 
-        OCRManager.getInstance().getWords(convertGray(screen));
+        OCRManager.getInstance().getWords(screen);
 //        OCRManager.getInstance().setImage(gray);
 //
 //        Rect rect = new Rect(0, 441, 260, 474); //name
