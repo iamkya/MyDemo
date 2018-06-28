@@ -30,7 +30,7 @@ public class OCRManager2 {
     public void init(){
 
         Context context = ContextModel.getInstance().getContext();
-        OCR.getInstance(context).initAccessTokenWithAkSk(new OnResultListener<AccessToken>() {
+        OCR.getInstance(context).initAccessToken(new OnResultListener<AccessToken>() {
             @Override
             public void onResult(AccessToken result) {
                 // 调用成功，返回AccessToken对象
@@ -49,7 +49,7 @@ public class OCRManager2 {
                     e.printStackTrace();
                 }
             }
-        }, context, "2WlelgwUtrpD4Sxb6ybHGUf1", "wkHuyiBHo9vnRFolVNDDLiiFA8CRKuk9");
+        }, context);
     }
 
     public void doOcr(){
