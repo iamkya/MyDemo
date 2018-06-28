@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 
         mainActivity = this;
 
-        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -60,6 +60,15 @@ public class MainActivity extends Activity {
                 anotherThread = new AnotherThread();
                 anotherThread.start();
                 //OCRManager2.getInstance().doOcr();
+            }
+        });
+
+        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                workingThread = new WorkingThread();
+                workingThread.start();
             }
         });
     }
@@ -114,6 +123,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         mainActivity = null;
+        System.exit(0);
+
         super.onDestroy();
     }
 }

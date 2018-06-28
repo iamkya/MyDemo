@@ -187,6 +187,9 @@ public class AnotherThread extends BaseThread {
         //click2(startPointRightRect);//机场
 
         exec("input swipe 1338 208 1338 908");
+
+        sleep(2000);
+
         click2(enemy1);
 
 

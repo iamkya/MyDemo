@@ -37,7 +37,7 @@ public class ClickThread extends BaseThread {
     private RandomRect selectGroup2AtDeploy = new RandomRect();
 
 
-//    private static final String screen_group1 = "/sdcard/bada/group2.jpg";
+    public static final String screen_group1 = "/sdcard/bada/group2.jpg";
 
     @Override
     public void run() {
