@@ -77,6 +77,11 @@ public class BaseThread extends Thread {
         }
     }
 
+    Random random = new Random();
+    protected int getSmallRan(){
+        return random.nextInt(500);
+    }
+
     void click(RandomRect rect, int sleepTime) {
 
         DebugUtil.e("clicking " + rect.getTag());
@@ -86,7 +91,7 @@ public class BaseThread extends Thread {
 
         try {
             if(sleepTime != 0f){
-                Thread.sleep((long) sleepTime * 1000);
+                Thread.sleep((long) (sleepTime  * 1000 + getSmallRan()));
             }
 
         }catch (Throwable e){

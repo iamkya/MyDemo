@@ -279,7 +279,7 @@ public class AnotherThread extends BaseThread {
                 }
             }
 
-            if(!keepChecking && i > 6) {
+            if(!keepChecking && i > 4) {
                 break;
             }
         }

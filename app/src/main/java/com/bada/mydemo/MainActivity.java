@@ -56,14 +56,13 @@ public class MainActivity extends Activity {
 
 //                clickThread = new ClickThread();
 //                clickThread.start();
-//                anotherThread = new AnotherThread();
-//                anotherThread.start();
-//                anotherThread = new AnotherThread();
-//                anotherThread.start();
+                anotherThread = new AnotherThread();
+                anotherThread.start();
+
                 //OCRManager2.getInstance().doOcr();
 
-                myThread = new MyThread();
-                myThread.start();
+//                myThread = new MyThread();
+//                myThread.start();
             }
         });
 
