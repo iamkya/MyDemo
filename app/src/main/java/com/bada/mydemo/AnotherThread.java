@@ -78,7 +78,7 @@ public class AnotherThread extends BaseThread {
 
     private RandomRect enemy1 = new RandomRect(696,887,105,105,"enemy1");
     private RandomRect enemy2 = new RandomRect(742,575,105,105,"enemy2");
-    private RandomRect empty1 = new RandomRect(956,261,105,105,"empty1");
+    private RandomRect empty1 = new RandomRect(976,268,60,60,"empty1");
     private RandomRect enemy3 = new RandomRect(743,156,80,56,"enemy3");
 
     private RandomRect round2StartPoint = new RandomRect(735,340,105,105,"round2StartPoint");
