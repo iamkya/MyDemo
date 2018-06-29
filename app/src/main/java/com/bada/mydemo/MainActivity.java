@@ -23,6 +23,7 @@ public class MainActivity extends Activity {
     OpenThread openThread;
     ClickThread clickThread;
     AnotherThread anotherThread;
+    MyThread myThread;
 
     public static MainActivity mainActivity = null;
 
@@ -57,9 +58,12 @@ public class MainActivity extends Activity {
 //                clickThread.start();
 //                anotherThread = new AnotherThread();
 //                anotherThread.start();
-                anotherThread = new AnotherThread();
-                anotherThread.start();
+//                anotherThread = new AnotherThread();
+//                anotherThread.start();
                 //OCRManager2.getInstance().doOcr();
+
+                myThread = new MyThread();
+                myThread.start();
             }
         });
 

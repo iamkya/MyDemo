@@ -1,6 +1,9 @@
 package com.bada.mydemo.dataType;
 
-public class FocusRect {
+import java.io.Serializable;
+
+public class FocusRect implements Serializable{
+    static final long serialVersionUID = 1L;
 
     int topX;
     int topY;

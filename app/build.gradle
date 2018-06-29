@@ -23,4 +23,5 @@ dependencies {
     implementation 'com.rmtheis:tess-two:9.0.0'
     implementation project(':openCVLibrary341')
     implementation files('libs/ocr-sdk.jar')
+//    implementation 'com.ea.async:ea-async:1.2.0'
 }

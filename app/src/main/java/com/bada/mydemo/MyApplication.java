@@ -1,13 +1,6 @@
 package com.bada.mydemo;
 
 import android.app.Application;
-import android.content.Context;
-import android.os.Environment;
-
-import com.baidu.ocr.sdk.OCR;
-import com.baidu.ocr.sdk.OnResultListener;
-import com.baidu.ocr.sdk.exception.OCRError;
-import com.baidu.ocr.sdk.model.AccessToken;
 
 import org.opencv.android.InstallCallbackInterface;
 import org.opencv.android.LoaderCallbackInterface;

@@ -1,6 +1,6 @@
 package com.bada.mydemo.dataType;
 
-        import java.util.Random;
+import java.util.Random;
 
 public class RandomRect extends FocusRect{
 
