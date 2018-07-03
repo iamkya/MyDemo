@@ -74,6 +74,16 @@ public class MainActivity extends Activity {
                 workingThread.start();
             }
         });
+
+        findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                myThread = new MyThread();
+                myThread.start();
+            }
+        });
+
     }
 
 //    private void work(int xcoord, int ycoord)

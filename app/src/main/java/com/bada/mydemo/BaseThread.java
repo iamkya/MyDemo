@@ -27,6 +27,17 @@ public class BaseThread extends Thread {
 
     }
 
+    void mySleep(int sec) {
+        try {
+
+            DebugUtil.e("about to sleep " + sec + " seconds");
+            Thread.sleep(sec * 1000);
+
+        }catch (Throwable e){
+            e.printStackTrace();
+        }
+    }
+
     int getSleepTime() {
 
         Random rand = new Random();

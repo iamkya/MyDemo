@@ -30,11 +30,11 @@ public class OCRUtil {
         void onGetRect(List<Rect> rectList);
     }
 
-    public void getRect(final String text, final RectCB cb) {
+    public void getRect(final String text, final RectCB cb, String filePath) {
         // 通用文字识别参数设置
         GeneralParams param = new GeneralParams();
         param.setDetectDirection(false);
-        param.setImageFile(new File("/sdcard/bada/main1.jpg"));
+        param.setImageFile(new File(filePath));
 
         Context context = ContextModel.getInstance().getContext();
         OCR.getInstance(context).recognizeGeneral(param, new OnResultListener<GeneralResult>() {
