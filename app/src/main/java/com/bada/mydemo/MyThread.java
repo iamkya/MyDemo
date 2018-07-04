@@ -1,9 +1,13 @@
 package com.bada.mydemo;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import com.bada.mydemo.dataType.ClickRect;
 
+import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -18,8 +22,14 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static android.graphics.Bitmap.Config.ARGB_8888;
+import static org.opencv.imgproc.Imgproc.TM_CCOEFF_NORMED;
 
 @SuppressWarnings("unchecked")
 public class MyThread extends BaseThread {
@@ -64,7 +74,10 @@ public class MyThread extends BaseThread {
 //            findLine222();
 //            clickText("指挥部", "command_center", "/sdcard/bada/4.png");
 
-            findLineWhite();
+//            findRoundWhite();
+
+//            findLineWhite();
+            findLineWhiteTemplate();
 
         }catch (Throwable e){
             e.printStackTrace();
@@ -297,6 +310,8 @@ public class MyThread extends BaseThread {
 //            Core.inRange(converted, new Scalar(0, 0, 200), new Scalar(255, 255, 255), white);
             Core.inRange(converted, new Scalar(0,0,0), new Scalar(0,0,255), white);
 
+            Imgproc.GaussianBlur(white, white, new Size(9, 9), 2, 2);
+
             Mat lines = new Mat();
             Imgproc.HoughLinesP(white, lines, 1, Math.PI/180, 30, 10, 20);
             for (int x = 0; x < lines.rows(); x++){
@@ -305,20 +320,157 @@ public class MyThread extends BaseThread {
                 Point a = new Point(l[0], l[1]);
                 Point b = new Point(l[2], l[3]);
 
-                if(distance(a, b) > 30){
+                if(distance(a, b) > 20){
                     continue;
                 }
 
-                Imgproc.line(src, a, b, new Scalar(0, 0, 255), 3, Imgproc.LINE_AA, 0);
+                Imgproc.line(src, a, b, new Scalar(0, 0, 255), 1, Imgproc.LINE_AA, 0);
             }
 
+//            Imgproc.HoughLines(white, lines, 1, Math.PI/180, 150, 10, 30, 30, 50); // runs the actual detection
+//            // Draw the lines
+//            for (int x = 0; x < lines.rows(); x++) {
+//                double rho = lines.get(x, 0)[0],
+//                        theta = lines.get(x, 0)[1];
+//                double a = Math.cos(theta), b = Math.sin(theta);
+//                double x0 = a*rho, y0 = b*rho;
+//                Point pt1 = new Point(Math.round(x0 + 1000*(-b)), Math.round(y0 + 1000*(a)));
+//                Point pt2 = new Point(Math.round(x0 - 1000*(-b)), Math.round(y0 - 1000*(a)));
+//                Imgproc.line(src, pt1, pt2, new Scalar(0, 0, 255), 3, Imgproc.LINE_AA, 0);
+//            }
+
             Imgcodecs.imwrite("/sdcard/findLine33.jpg", src);
+            Imgcodecs.imwrite("/sdcard/white.jpg", white);
 
             DebugUtil.e("1111");
         }catch (Throwable e){
             e.printStackTrace();
         }
 
+
+    }
+
+    void findLineWhiteTemplate(){
+
+        try {
+
+            File file = new File("/sdcard/findLine33.jpg");
+            if(file.exists()){
+                boolean b = file.delete();
+                if(b)
+                    DebugUtil.e("/sdcard/findLine33.jpg deleteded");
+            }
+
+            Mat src = Imgcodecs.imread("/sdcard/bada/5.png");
+
+            Mat converted = new Mat();
+            Imgproc.cvtColor(src, converted, Imgproc.COLOR_BGR2HSV); //COLOR_RGB2HSV
+
+//            Mat sample = new Mat();
+//
+//            Bitmap bitmap = Bitmap.createBitmap(8, 12, ARGB_8888);
+//            bitmap.eraseColor(ContextModel.getInstance().getContext().getResources().getColor(R.color.white));
+//
+//            Bitmap bmp32 = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+//            Utils.bitmapToMat(bmp32, sample);
+
+
+            Mat white = new Mat();
+//            Core.inRange(converted, new Scalar(0, 0, 200), new Scalar(255, 255, 255), white);
+            Core.inRange(converted, new Scalar(0,0,0), new Scalar(0,0,255), white);
+
+            Imgproc.GaussianBlur(white, white, new Size(9, 9), 2, 2);
+
+            Mat lines = new Mat();
+
+//            Imgproc.matchTemplate(white, sample, lines, TM_CCOEFF_NORMED);
+
+            Imgproc.HoughLinesP(white, lines, 1, Math.PI/180, 30, 10, 20);
+            for (int x = 0; x < lines.rows(); x++){
+
+                double[] l = lines.get(x, 0);
+                Point a = new Point(l[0], l[1]);
+                Point b = new Point(l[2], l[3]);
+
+                double distance = distance(a, b);
+                if(distance > 20){
+                    continue;
+                }
+
+//                DebugUtil.e("distance =" + String.valueOf(distance));
+                Imgproc.line(src, a, b, new Scalar(0, 0, 255), 1, Imgproc.LINE_AA, 0);
+            }
+//            Imgproc.HoughLines(white, lines, 1, Math.PI/180, 150, 10, 30, 30, 50); // runs the actual detection
+//            // Draw the lines
+//            for (int x = 0; x < lines.rows(); x++) {
+//                double rho = lines.get(x, 0)[0],
+//                        theta = lines.get(x, 0)[1];
+//                double a = Math.cos(theta), b = Math.sin(theta);
+//                double x0 = a*rho, y0 = b*rho;
+//                Point pt1 = new Point(Math.round(x0 + 1000*(-b)), Math.round(y0 + 1000*(a)));
+//                Point pt2 = new Point(Math.round(x0 - 1000*(-b)), Math.round(y0 - 1000*(a)));
+//                Imgproc.line(src, pt1, pt2, new Scalar(0, 0, 255), 3, Imgproc.LINE_AA, 0);
+//            }
+
+            Imgcodecs.imwrite("/sdcard/findLine33.jpg", src);
+            Imgcodecs.imwrite("/sdcard/white.jpg", white);
+
+            DebugUtil.e("1111");
+        }catch (Throwable e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    void findRoundWhite() {
+
+        try {
+
+            Mat src = Imgcodecs.imread("/sdcard/bada/5.png");
+
+            Mat gray = new Mat();
+            Imgproc.cvtColor(src, gray, Imgproc.COLOR_BGR2HSV);
+
+//            Mat lower_red_hue_range = new Mat();
+//            Core.inRange(gray, new Scalar(0, 100, 100), new Scalar(10, 255, 255), lower_red_hue_range);
+//
+//            Mat upper_red_hue_range = new Mat();
+//            Core.inRange(gray, new Scalar(160, 100, 100), new Scalar(179, 255, 255), upper_red_hue_range);
+//
+//            Mat red_hue_image = new Mat();
+//            Core.addWeighted(lower_red_hue_range, 1.0, upper_red_hue_range, 1.0, 0.0, red_hue_image);
+//
+            Mat white = new Mat();
+            Core.inRange(gray, new Scalar(0,0,0), new Scalar(0,0,255), white);
+
+            Imgproc.GaussianBlur(white, white, new Size(9, 9), 2, 2);
+
+            Mat circles = new Mat();
+            Imgproc.HoughCircles(white, circles, Imgproc.HOUGH_GRADIENT, 1.0,
+                    200,
+                    500, 20, 40, 100);
+
+            DebugUtil.e("circles " + circles.cols());
+
+            for (int x = 0; x < circles.cols(); x++) {
+                double[] c = circles.get(0, x);
+                Point center = new Point(Math.round(c[0]), Math.round(c[1]));
+                // circle center
+                Imgproc.circle(src, center, 1, new Scalar(0,100,100), 3, 8, 0 );
+                // circle outline
+                int radius = (int) Math.round(c[2]);
+                Imgproc.circle(src, center, radius, new Scalar(255,0,255), 3, 8, 0 );
+            }
+
+            Imgcodecs.imwrite("/sdcard/white.jpg", white);
+            Imgcodecs.imwrite("/sdcard/test3.jpg", src);
+
+            DebugUtil.e("1111");
+        }catch (Throwable e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -342,6 +494,7 @@ public class MyThread extends BaseThread {
 
         DebugUtil.e("findLine33 ");
     }
+
     private final Object waitLock = new Object();
 
     void clickText(final String text, final String tag, String filePath) throws Throwable{
