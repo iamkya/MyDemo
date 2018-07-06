@@ -55,7 +55,7 @@ public class MyThread extends BaseThread {
         init();
 
         try {
-            sleep(10 * 1000);
+
 //            clickText("COMBAT", "combatRect", "/sdcard/bada/main1.jpg");
 //
 //            mySleep(3);
@@ -84,6 +84,10 @@ public class MyThread extends BaseThread {
 //            findRoundBlue();
 //            findRoundWhite();
 //            findRoundRed();
+
+            clickText("预设队伍", "combact", "/sdcard/bada/6.png");
+            /*
+            bug.. ignore
             String zoomIn = "input tap 200 200 & PIDTAP=$!\n" +
                     "sleep 0.1\n" +
                     "input swipe 200 200 200 100 1000 & PIDSWIPE=$!\n" +
@@ -92,6 +96,7 @@ public class MyThread extends BaseThread {
 
             Intent broadcast = new Intent("com.bada.mydemo");
             broadcast.putExtra("command", zoomIn);
+            */
 //            ContextModel.getInstance().getContext().sendBroadcast(broadcast);
 //            exec("input tap 200 200 & PIDTAP=$!\n" +
 //                    "sleep 0.1\n" +
