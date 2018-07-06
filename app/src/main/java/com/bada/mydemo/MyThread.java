@@ -1,9 +1,13 @@
 package com.bada.mydemo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.Debug;
+import android.os.SystemClock;
+import android.util.Log;
 
 import com.bada.mydemo.dataType.ClickRect;
 
@@ -51,7 +55,7 @@ public class MyThread extends BaseThread {
         init();
 
         try {
-
+            sleep(10 * 1000);
 //            clickText("COMBAT", "combatRect", "/sdcard/bada/main1.jpg");
 //
 //            mySleep(3);
@@ -74,16 +78,30 @@ public class MyThread extends BaseThread {
 //            findLine222();
 //            clickText("指挥部", "command_center", "/sdcard/bada/4.png");
 
-//            findRoundWhite();
-
 //            findLineWhite();
-            findLineWhiteTemplate();
+//            findLineWhiteTemplate();
 
+//            findRoundBlue();
+//            findRoundWhite();
+//            findRoundRed();
+            String zoomIn = "input tap 200 200 & PIDTAP=$!\n" +
+                    "sleep 0.1\n" +
+                    "input swipe 200 200 200 100 1000 & PIDSWIPE=$!\n" +
+                    "wait $PIDTAP\n" +
+                    "wait $PIDSWIPE\n";
+
+            Intent broadcast = new Intent("com.bada.mydemo");
+            broadcast.putExtra("command", zoomIn);
+//            ContextModel.getInstance().getContext().sendBroadcast(broadcast);
+//            exec("input tap 200 200 & PIDTAP=$!\n" +
+//                    "sleep 0.1\n" +
+//                    "input swipe 200 200 200 100 1000 & PIDSWIPE=$!\n" +
+//                    "wait $PIDTAP\n" +
+//                    "wait $PIDSWIPE\n");
         }catch (Throwable e){
             e.printStackTrace();
         }
     }
-
     private void findRound() {
 
         try {
@@ -151,12 +169,12 @@ public class MyThread extends BaseThread {
             e.printStackTrace();
         }
     }
-    //TODO this one works
+
     private void findRoundRed() {
 
         try {
 
-            Mat src = Imgcodecs.imread("/sdcard/bada/5.png");
+            Mat src = Imgcodecs.imread("/sdcard/bada/4.png");
 
             Mat gray = new Mat();
             Imgproc.cvtColor(src, gray, Imgproc.COLOR_BGR2HSV);
@@ -175,8 +193,10 @@ public class MyThread extends BaseThread {
             Mat circles = new Mat();
             Imgproc.HoughCircles(red_hue_image, circles, Imgproc.HOUGH_GRADIENT, 1.0,
                     200,
-                    100.0, 20, 40, 120);
-            // (min_radius & max_radius) to detect larger circles
+                    500, 20, 40, 120);
+
+            DebugUtil.e("circles = " + circles.cols());
+
             for (int x = 0; x < circles.cols(); x++) {
                 double[] c = circles.get(0, x);
                 Point center = new Point(Math.round(c[0]), Math.round(c[1]));
@@ -187,7 +207,9 @@ public class MyThread extends BaseThread {
                 Imgproc.circle(src, center, radius, new Scalar(255,0,255), 3, 8, 0 );
             }
 
-            Imgcodecs.imwrite("/sdcard/test3.jpg", src);
+
+            Imgcodecs.imwrite("/sdcard/red_hue_image.jpg", red_hue_image);
+            Imgcodecs.imwrite("/sdcard/findRoundRed.jpg", src);
 
             DebugUtil.e("1111");
         }catch (Throwable e){
@@ -428,7 +450,7 @@ public class MyThread extends BaseThread {
 
         try {
 
-            Mat src = Imgcodecs.imread("/sdcard/bada/5.png");
+            Mat src = Imgcodecs.imread("/sdcard/bada/4.png");
 
             Mat gray = new Mat();
             Imgproc.cvtColor(src, gray, Imgproc.COLOR_BGR2HSV);
@@ -450,7 +472,64 @@ public class MyThread extends BaseThread {
             Mat circles = new Mat();
             Imgproc.HoughCircles(white, circles, Imgproc.HOUGH_GRADIENT, 1.0,
                     200,
-                    500, 20, 40, 100);
+                    550, 20, 40, 50);
+
+            DebugUtil.e("circles " + circles.cols());
+
+            for (int x = 0; x < circles.cols(); x++) {
+                double[] c = circles.get(0, x);
+                Point center = new Point(Math.round(c[0]), Math.round(c[1]));
+                // circle center
+                Imgproc.circle(src, center, 1, new Scalar(0,100,100), 3, 8, 0 );
+                // circle outline
+                int radius = (int) Math.round(c[2]);
+                DebugUtil.e(" radius = " + radius);
+                Imgproc.circle(src, center, radius, new Scalar(255,0,255), 3, 8, 0 );
+            }
+
+            Imgcodecs.imwrite("/sdcard/white.jpg", white);
+            Imgcodecs.imwrite("/sdcard/test3.jpg", src);
+
+            DebugUtil.e("1111");
+        }catch (Throwable e){
+            e.printStackTrace();
+        }
+
+    }
+
+    void findRoundBlue(){
+        try {
+
+            Mat src = Imgcodecs.imread("/sdcard/bada/4.png");
+
+            Mat gray = new Mat();
+            Imgproc.cvtColor(src, gray, Imgproc.COLOR_BGR2HSV);
+
+//            Mat lower_red_hue_range = new Mat();
+//            Core.inRange(gray, new Scalar(0, 100, 100), new Scalar(10, 255, 255), lower_red_hue_range);
+//
+//            Mat upper_red_hue_range = new Mat();
+//            Core.inRange(gray, new Scalar(160, 100, 100), new Scalar(179, 255, 255), upper_red_hue_range);
+//
+//            Mat red_hue_image = new Mat();
+//            Core.addWeighted(lower_red_hue_range, 1.0, upper_red_hue_range, 1.0, 0.0, red_hue_image);
+//
+            Mat blue = new Mat();
+//            Core.inRange(gray, new Scalar(105,135,68), new Scalar(120,220,180), blue);
+            Core.inRange(gray, new Scalar(100, 100, 100), new Scalar(120, 255, 255), blue);
+//
+//            ColorDetection.detectSingleBlob(mYuv, mColor, "B", mResult);
+//            Imgproc.cvtColor(mResult, mRgba, Imgproc.COLOR_YUV420sp2RGB, 4);
+
+//            Mat blue = new Mat();
+//            Core.bitwise_and(gray, gray, blue, mask);
+            //Imgproc.GaussianBlur(blue, blue, new Size(9, 9), 2, 2);
+//            Core.bitwise_and(gray, gray, blue);
+
+            Mat circles = new Mat();
+            Imgproc.HoughCircles(blue, circles, Imgproc.HOUGH_GRADIENT, 1.0,
+                    200,
+                    500, 20, 40, 150);
 
             DebugUtil.e("circles " + circles.cols());
 
@@ -464,7 +543,7 @@ public class MyThread extends BaseThread {
                 Imgproc.circle(src, center, radius, new Scalar(255,0,255), 3, 8, 0 );
             }
 
-            Imgcodecs.imwrite("/sdcard/white.jpg", white);
+            Imgcodecs.imwrite("/sdcard/blue.jpg", blue);
             Imgcodecs.imwrite("/sdcard/test3.jpg", src);
 
             DebugUtil.e("1111");
