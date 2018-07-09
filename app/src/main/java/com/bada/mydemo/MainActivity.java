@@ -79,8 +79,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                myThread = new MyThread();
-                myThread.start();
+                openThread = new OpenThread();
+                openThread.start();
             }
         });
 

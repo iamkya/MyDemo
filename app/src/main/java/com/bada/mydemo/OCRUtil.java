@@ -27,13 +27,16 @@ public class OCRUtil {
     }
 
     interface RectCB {
-        void onGetRect(List<Rect> rectList);
+        void onGetRect(List<Word> rectList);
     }
 
-    public void getRect(final String text, final RectCB cb, String filePath) {
+    public void getRect(final String text, final RectCB cb, String filePath, final boolean isEqual) {
         // 通用文字识别参数设置
         GeneralParams param = new GeneralParams();
         param.setDetectDirection(false);
+        param.setLanguageType("CHN_ENG");
+//        param.getStringParams().put("+words", "ECHELON");
+
         param.setImageFile(new File(filePath));
 
         Context context = ContextModel.getInstance().getContext();
@@ -41,6 +44,7 @@ public class OCRUtil {
             @Override
             public void onResult(GeneralResult result) {
 //                StringBuilder sb = new StringBuilder();
+                /*
                 List<Rect> rectList = new ArrayList<>();
 
                 for (WordSimple wordSimple : result.getWordList()) {
@@ -56,19 +60,37 @@ public class OCRUtil {
 //                    if(word.getWords().contains("生命")){
                         DebugUtil.debug("found: " +word.getWords() + " at " + word.getLocation().getLeft() + " " + word.getLocation().getTop() + " " + word.getLocation().getWidth() + " " + word.getLocation().getHeight());
 //                    }
-                    if(word.getWords().equals(text)){
-                        Location location = word.getLocation();
-                        int right = location.getLeft() + location.getWidth();
-                        int bottom = location.getTop() + location.getHeight();
+                    if(isEqual){
+                        if(word.getWords().equals(text)){
+                            Location location = word.getLocation();
+                            int right = location.getLeft() + location.getWidth();
+                            int bottom = location.getTop() + location.getHeight();
 
-                        Rect rect = new Rect(location.getLeft(), location.getTop(), right, bottom );
+                            Rect rect = new Rect(location.getLeft(), location.getTop(), right, bottom );
 
-                        rectList.add(rect);
+                            rectList.add(rect);
+                        }
+                    }else{
+                        if(word.getWords().contains(text)){
+                            Location location = word.getLocation();
+                            int right = location.getLeft() + location.getWidth();
+                            int bottom = location.getTop() + location.getHeight();
+
+                            Rect rect = new Rect(location.getLeft(), location.getTop(), right, bottom );
+
+                            rectList.add(rect);
+                        }
                     }
+                }
+*/
+                ArrayList<Word> list = new ArrayList<>();
+                for (WordSimple wordSimple : result.getWordList()){
+                    Word word = (Word)wordSimple;
+                    list.add(word);
                 }
 
                 if(cb != null){
-                    cb.onGetRect(rectList);
+                    cb.onGetRect(list);
                 }
 
                 // 调用成功，返回GeneralResult对象，通过getJsonRes方法获取API返回字符串

@@ -110,7 +110,7 @@ public class AnotherThread extends BaseThread {
     void prepareGroup1(){
         fight1.clear();
 
-        fight1.add(selectGroup1AtDeploy);
+        //fight1.add(selectGroup1AtDeploy);
         fight1.add(groupFormationRect);
         fight1.add(savedFormationAtGroupDetail);
         fight1.add(savedFormationRect);

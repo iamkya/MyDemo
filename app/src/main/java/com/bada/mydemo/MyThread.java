@@ -10,6 +10,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.bada.mydemo.dataType.ClickRect;
+import com.baidu.ocr.sdk.model.Word;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -601,13 +602,13 @@ public class MyThread extends BaseThread {
 
     ClickRect getRectViaEngine(final String text, final String tag, final String filePath){
 
-        final ClickRect[] resultRect = {null};
+        final ArrayList<ClickRect> resultRect = new ArrayList<>();
 
         synchronized (waitLock){
 
         OCRUtil.getInstance().getRect(text, new OCRUtil.RectCB() {
             @Override
-            public void onGetRect(List<Rect> rectList) {
+            public void onGetRect(List<Word> rectList) {
 
                 DebugUtil.e("found " + text + " size = " + rectList.size());
                 if(rectList.size() == 0){
@@ -615,12 +616,18 @@ public class MyThread extends BaseThread {
                     return;
                 }
 
-                Rect rect = rectList.get(0);
+                for (Word word : rectList){
+                    if(word.getWords().equals(text)){
+                        int left = word.getLocation().getLeft();
+                        int top = word.getLocation().getTop();
+                        int width = word.getLocation().getWidth();
+                        int height = word.getLocation().getHeight();
 
-                resultRect[0] = new ClickRect(rect.left, rect.top, rect.width(), rect.height(), tag);
-                resultRect[0].setButtonText(text);
+                        resultRect.add(new ClickRect(left, top, width, height));
+                    }
+                }
 
-                rectMap.put(tag, resultRect[0]);
+                rectMap.put(tag, resultRect.get(0));
 
                 synchronized (waitLock){
                     try {
@@ -630,7 +637,7 @@ public class MyThread extends BaseThread {
                     }
                 }
             }
-        }, filePath);
+        }, filePath, true);
 
             try {
                 waitLock.wait();
@@ -638,7 +645,7 @@ public class MyThread extends BaseThread {
                 e.printStackTrace();
             }
         }
-        return resultRect[0];
+        return resultRect.get(0);
     }
 
 //    static CompletableFuture<ClickRect> getRect(String text, String tag){
