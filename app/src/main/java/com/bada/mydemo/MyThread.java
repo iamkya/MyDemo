@@ -83,10 +83,13 @@ public class MyThread extends BaseThread {
 //            findLineWhiteTemplate();
 
 //            findRoundBlue();
-//            findRoundWhite();
-//            findRoundRed();
 
-            clickText("预设队伍", "combact", "/sdcard/bada/6.png");
+            testAna2();
+
+            findRoundWhite();
+            findRoundRed();
+
+//            clickText("预设队伍", "combact", "/sdcard/bada/6.png");
             /*
             bug.. ignore
             String zoomIn = "input tap 200 200 & PIDTAP=$!\n" +
@@ -108,6 +111,16 @@ public class MyThread extends BaseThread {
             e.printStackTrace();
         }
     }
+
+    void testAna2(){
+
+        Point a = new Point(300, 200);
+        Point b = new Point(200, 100);
+
+        double ana2 = Math.atan2(b.y - a.y, b.x - a.x);
+        DebugUtil.e("ana2 = " + ana2);
+    }
+
     private void findRound() {
 
         try {
@@ -180,7 +193,7 @@ public class MyThread extends BaseThread {
 
         try {
 
-            Mat src = Imgcodecs.imread("/sdcard/bada/4.png");
+            Mat src = Imgcodecs.imread("/sdcard/bada/5.png");
 
             Mat gray = new Mat();
             Imgproc.cvtColor(src, gray, Imgproc.COLOR_BGR2HSV);
@@ -203,18 +216,41 @@ public class MyThread extends BaseThread {
 
             DebugUtil.e("circles = " + circles.cols());
 
+            //1008.0 311.0
+            Point test = new Point(1008.0, 311.0);
+
             for (int x = 0; x < circles.cols(); x++) {
                 double[] c = circles.get(0, x);
                 Point center = new Point(Math.round(c[0]), Math.round(c[1]));
-                // circle center
-                Imgproc.circle(src, center, 1, new Scalar(0,100,100), 3, 8, 0 );
-                // circle outline
-                int radius = (int) Math.round(c[2]);
-                Imgproc.circle(src, center, radius, new Scalar(255,0,255), 3, 8, 0 );
+
+                double atan2 = Math.atan2((center.y - test.y ), ( center.x - test.x));
+
+                //左下
+//                if(atan2 > Math.PI/2 && atan2 < Math.PI){
+
+                //右下
+//                if(atan2 < Math.PI/2 && atan2 > 0)
+
+                //右上
+//                if(atan2 < 0 && atan2 > -Math.PI/2)
+
+                //左上
+//                if(atan2 < -Math.PI/2 && atan2 > -Math.PI)
+
+                {
+                    DebugUtil.e(center.x + " "+ center.y +  ", atan2 = " + atan2 + " degree= "  + atan2/Math.PI*180 + 180);
+
+                    // circle center
+                    Imgproc.circle(src, center, 1, new Scalar(0,100,100), 3, 8, 0 );
+                    // circle outline
+                    int radius = (int) Math.round(c[2]);
+                    Imgproc.circle(src, center, radius, new Scalar(255,0,255), 3, 8, 0 );
+                }
+
             }
 
 
-            Imgcodecs.imwrite("/sdcard/red_hue_image.jpg", red_hue_image);
+            Imgcodecs.imwrite("/sdcard/redTemp.jpg", red_hue_image);
             Imgcodecs.imwrite("/sdcard/findRoundRed.jpg", src);
 
             DebugUtil.e("1111");
@@ -456,7 +492,7 @@ public class MyThread extends BaseThread {
 
         try {
 
-            Mat src = Imgcodecs.imread("/sdcard/bada/4.png");
+            Mat src = Imgcodecs.imread("/sdcard/bada/5.png");
 
             Mat gray = new Mat();
             Imgproc.cvtColor(src, gray, Imgproc.COLOR_BGR2HSV);
@@ -478,7 +514,7 @@ public class MyThread extends BaseThread {
             Mat circles = new Mat();
             Imgproc.HoughCircles(white, circles, Imgproc.HOUGH_GRADIENT, 1.0,
                     200,
-                    550, 20, 40, 50);
+                    500, 20, 40, 50);
 
             DebugUtil.e("circles " + circles.cols());
 
@@ -489,12 +525,12 @@ public class MyThread extends BaseThread {
                 Imgproc.circle(src, center, 1, new Scalar(0,100,100), 3, 8, 0 );
                 // circle outline
                 int radius = (int) Math.round(c[2]);
-                DebugUtil.e(" radius = " + radius);
+                DebugUtil.e(" ponit = " + center.x + " " + center.y);
                 Imgproc.circle(src, center, radius, new Scalar(255,0,255), 3, 8, 0 );
             }
 
-            Imgcodecs.imwrite("/sdcard/white.jpg", white);
-            Imgcodecs.imwrite("/sdcard/test3.jpg", src);
+            Imgcodecs.imwrite("/sdcard/whiteTemp.jpg", white);
+            Imgcodecs.imwrite("/sdcard/findRoundWhite.jpg", src);
 
             DebugUtil.e("1111");
         }catch (Throwable e){
@@ -606,7 +642,7 @@ public class MyThread extends BaseThread {
 
         synchronized (waitLock){
 
-        OCRUtil.getInstance().getRect(text, new OCRUtil.RectCB() {
+        OCRUtil.getInstance().getRect(new OCRUtil.RectCB() {
             @Override
             public void onGetRect(List<Word> rectList) {
 

@@ -2,6 +2,7 @@ package com.bada.mydemo;
 
 import android.widget.Toast;
 
+import com.bada.mydemo.dataType.ClickRect;
 import com.bada.mydemo.dataType.RandomRect;
 
 import java.io.DataOutputStream;
@@ -9,6 +10,7 @@ import java.io.InputStream;
 import java.util.Random;
 
 public class BaseThread extends Thread {
+    int screenHeight;
 
     Process shell = null;
     DataOutputStream os = null;
@@ -53,6 +55,7 @@ public class BaseThread extends Thread {
             shell = Runtime.getRuntime().exec("su", null,null);
             os = new DataOutputStream(shell.getOutputStream());
             is = shell.getInputStream();
+            screenHeight = ContextModel.getInstance().getContext().getResources().getDisplayMetrics().heightPixels;
 
         }catch (Throwable e){
             e.printStackTrace();
@@ -95,7 +98,11 @@ public class BaseThread extends Thread {
 
     void click(RandomRect rect, int sleepTime) {
 
-        DebugUtil.e("clicking " + rect.getTag());
+        if(rect instanceof ClickRect){
+            DebugUtil.e("clicking " + rect.getTag() + " " + ((ClickRect) rect).getButtonText());
+        }else{
+            DebugUtil.e("clicking " + rect.getTag());
+        }
 
         String command = rect.getClickPoint();
         exec("input tap " + command);

@@ -19,6 +19,10 @@ public class RandomRect extends FocusRect{
 
     String tag;
 
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
     public String getTag(){
         if(tag != null)
             return tag;

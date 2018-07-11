@@ -2,6 +2,7 @@ package com.bada.mydemo;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.Display;
 
 import com.bada.mydemo.dataType.ClickRect;
 import com.bada.mydemo.dataType.RandomRect;
@@ -142,7 +143,7 @@ public class OpenThread extends BaseThread {
 
         clickText("普通作战", "normalCombat");
 
-        prepareGroup(index);
+        doBattle(index);
 //        click2(startPointRightRect);//点机场
 //
 //        int fightGroup = index % 2;
@@ -156,11 +157,20 @@ public class OpenThread extends BaseThread {
 //            performPrepareAndDeploy(fight2, fightGroup);
 //        }
 //
-        //then battle should start
-//        battleBegan(index);
     }
 
-    void prepareGroup(int index){
+    ArrayList<ClickRect> deployGroupRects = null;
+    ArrayList<ClickRect> formationGroupRects = null;
+    ArrayList<ClickRect> formations = null;
+
+    boolean shouldDragLeader = false;
+
+    final String strConfirm = "确认";
+    final String strStartBattle = "开始作战";
+    final String strSupply = "补给";
+    final String strPlanMode = "计划模式";
+
+    void doBattle(int index){
 
         ArrayList<ClickRect> blues = getColorRect(RectColor.blue);
 
@@ -174,54 +184,175 @@ public class OpenThread extends BaseThread {
 
         clickText("队伍编成", "groupFormation");
 
-        ArrayList<ClickRect> deploy = findGroupNumberRect(index == 0, "deploy");
+        //////
+        if(index == 0){
+            screenCap();
+            formationGroupRects = findSeveralRects(screen_cap_path, SeveralRectType.groupNumber);
 
-        ArrayList<ClickRect> formation = findGroupNumberRect(index == 0, "formation");
+            formationGroupRects.get(0).setTag("formationGroupRect1");
+
+            formationGroupRects.get(1).setTag("formationGroupRect2");
+        }
+
+        if(fightGroup == 0){
+
+            //click4(deployGroupRects.get(0));
+        }else {
+
+            click4(formationGroupRects.get(1));
+        }
+
+        ///////
+
+        clickText("阵型预设", "savedFormationAtGroupDetail");
+
+        clickText("预设", "savedFormationRect");
+
+        if(index == 0){
+            screenCap();
+            formations = findSeveralRects(screen_cap_path, SeveralRectType.savedFormation);
+            formations.get(0).setTag("savedFormation1");
+
+            formations.get(1).setTag("savedFormation2");
+        }
+
+        click4(formations.get(fightGroup));
+
+        clickText("套用预设", "applyFormationButton");
+
+        clickText("确认", "forceApplyDialogButton");
+
+        if(shouldDragLeader){
+
+        }
+
+        clickText("返回", "formationBack");
+
+        if(fightGroup == 0) {
+
+            click4(right);
+            clickText(strConfirm, "deployConfirmButton");
+
+            click4(left);
+            clickText(strConfirm, "deployConfirmButton");
+        }else{
+
+            click4(left);
+            clickText(strConfirm, "deployConfirmButton");
+
+            click4(right);
+            clickText(strConfirm, "deployConfirmButton");
+        }
+
+        //deployment finish, start the battle
+
+        clickText(strStartBattle, "startBattleButton");
+
+        //fill supply first
+        click1(left);
+        click1(left);
+        clickText(strSupply, "supplyButton");
+
+        //select right
+        click4(right);
+
+        clickText(strPlanMode, "planModeButton");
+
+        //self
+        click2(right);
+
+        ArrayList<ClickRect> reds = getColorRect(RectColor.red);
+
+        ClickRect enemy1 = findClosest(right, reds, Direction.TOP_LEFT);
+
+    }
+
+    enum Direction{
+        TOP_LEFT,
+        TOP_RIGHT,
+        BOTTOM_LEFT,
+        BOTTOM_RIGHT
+    }
+
+    ClickRect findClosest(ClickRect base, ArrayList<ClickRect> list, Direction direction){
+        return null;
+    }
+
+
+    ClickRect findSavedFormationRect() {
+
+        screenCap();
+
+        return null;
     }
 
     void testFunc(){
 
-        findGroupNumberRect(true, null);
+        findSeveralRects("/sdcard/bada/10.png", SeveralRectType.groupNumber);
     }
 
-    ArrayList<ClickRect> findGroupNumberRect(boolean shouldCapture, String tag){
+    ArrayList<ClickRect> wordToGroupClickRect(ArrayList<Word> list, SeveralRectType type){
 
-        DebugUtil.e("findGroupNumberRect");
+        if(type == SeveralRectType.groupNumber){
 
-        if(shouldCapture){
-            //capture();
+            ArrayList<ClickRect> list1 = new ArrayList<>();
+            ArrayList<ClickRect> list2 = new ArrayList<>();
+            for(Word word: list){
+                if(word.getLocation().getLeft() < 40){
 
-            ArrayList<ClickRect> clickRects1 = getRectsViaEngine("梯队", null, "/sdcard/bada/10.png");
-
-            for (ClickRect rect: clickRects1){
-
+                    if(word.getWords().contains("梯队")){
+                        list1.add(new ClickRect(word));
+                    }else if(word.getWords().contains("ECHELON")){
+                        list2.add(new ClickRect(word));
+                    }
+                }
             }
 
-            Collections.sort(clickRects1, new Comparator<ClickRect>() {
-                @Override
-                public int compare(ClickRect o1, ClickRect o2) {
-
-                    return o1.getTopY() - o2.getTopY();
-                }
-            });
-
-            ArrayList<ClickRect> clickRects2 = getRectsViaEngine("ECHELON", null, "/sdcard/bada/10.png");
-            Collections.sort(clickRects2, new Comparator<ClickRect>() {
-                @Override
-                public int compare(ClickRect o1, ClickRect o2) {
-
-                    return o1.getTopY() - o2.getTopY();
-                }
-            });
-
-            if(clickRects1.size() > clickRects2.size()){
-                return clickRects1;
+            if(list1.size() > list2.size()){
+                return list1;
             }else
-                return clickRects2;
+                return list2;
+        }else if(type == SeveralRectType.savedFormation){
 
+            ArrayList<ClickRect> list1 = new ArrayList<>();
+            for(Word word: list){
+                if(word.getLocation().getTop() > screenHeight/2){
+
+                    if(word.getWords().contains("预设队伍")){
+                        list1.add(new ClickRect(word));
+                    }
+                }
+            }
+
+            return list1;
         }
 
         return null;
+    }
+
+
+    enum SeveralRectType{
+        groupNumber,
+        savedFormation
+    }
+
+    ArrayList<ClickRect> findSeveralRects(String filePath, SeveralRectType type){
+
+        DebugUtil.e("findGroupNumberRect");
+
+        ArrayList<Word> words = getRectsViaEngine(filePath);
+
+        ArrayList<ClickRect> clickRects1 = wordToGroupClickRect(words, type);
+
+        Collections.sort(clickRects1, new Comparator<ClickRect>() {
+            @Override
+            public int compare(ClickRect o1, ClickRect o2) {
+
+                return o1.getTopY() - o2.getTopY();
+            }
+        });
+
+        return clickRects1;
     }
 
     ClickRect findMostLeft(ArrayList<ClickRect> rects){
@@ -319,7 +450,6 @@ public class OpenThread extends BaseThread {
 //                Imgproc.circle(src, center, radius, new Scalar(255,0,255), 3, 8, 0 );
 
                 ClickRect clickRect = getClickRectFromRound(center, radius);
-                clickRect.setCenter(center);
 
                 clickRectArrayList.add(clickRect);
             }
@@ -376,7 +506,6 @@ public class OpenThread extends BaseThread {
 //                Imgproc.circle(src, center, radius, new Scalar(255,0,255), 3, 8, 0 );
 
                 ClickRect clickRect = getClickRectFromRound(center, radius);
-                clickRect.setCenter(center);
 
                 clickRectArrayList.add(clickRect);
             }
@@ -437,7 +566,6 @@ public class OpenThread extends BaseThread {
 //                Imgproc.circle(src, center, radius, new Scalar(255,0,255), 3, 8, 0 );
 
                 ClickRect clickRect = getClickRectFromRound(center, radius);
-                clickRect.setCenter(center);
 
                 clickRectArrayList.add(clickRect);
             }
@@ -466,6 +594,8 @@ public class OpenThread extends BaseThread {
         int height = a * 2;
 
         ClickRect clickRect = new ClickRect(x, y, width, height);
+        clickRect.setCenter(center);
+        clickRect.setRadius(radius);
 
         return clickRect;
     }
@@ -492,32 +622,33 @@ public class OpenThread extends BaseThread {
         click4(clickRect);
     }
 
-    ArrayList<ClickRect> getRectsViaEngine(final String text, final String tag, final String filePath){
+    ArrayList<Word> getRectsViaEngine(final String filePath){
 
-        final ArrayList<ClickRect> resultRect = new ArrayList<>();
+        final ArrayList<Word> resultRect = new ArrayList<>();
 
         synchronized (waitLock){
 
-            OCRUtil.getInstance().getRect(text, new OCRUtil.RectCB() {
+            OCRUtil.getInstance().getRect(new OCRUtil.RectCB() {
                 @Override
                 public void onGetRect(List<Word> rectList) {
 
-                    DebugUtil.e("found " + text + " size = " + rectList.size());
                     if(rectList.size() == 0){
 
                         return;
                     }
 
-                    for (Word word : rectList){
-                        if(word.getWords().equals(text)){
-                            int left = word.getLocation().getLeft();
-                            int top = word.getLocation().getTop();
-                            int width = word.getLocation().getWidth();
-                            int height = word.getLocation().getHeight();
+//                    for (Word word : rectList){
+//                        if(word.getWords().equals(text)){
+//                            int left = word.getLocation().getLeft();
+//                            int top = word.getLocation().getTop();
+//                            int width = word.getLocation().getWidth();
+//                            int height = word.getLocation().getHeight();
+//
+//                            resultRect.add(new ClickRect(left, top, width, height));
+//                        }
+//                    }
 
-                            resultRect.add(new ClickRect(left, top, width, height));
-                        }
-                    }
+                    resultRect.addAll(rectList);
 
                     synchronized (waitLock){
                         try {
@@ -545,7 +676,7 @@ public class OpenThread extends BaseThread {
 
         synchronized (waitLock){
 
-            OCRUtil.getInstance().getRect(text, new OCRUtil.RectCB() {
+            OCRUtil.getInstance().getRect(new OCRUtil.RectCB() {
                 @Override
                 public void onGetRect(List<Word> rectList) {
 
@@ -562,7 +693,10 @@ public class OpenThread extends BaseThread {
                             int width = word.getLocation().getWidth();
                             int height = word.getLocation().getHeight();
 
-                            resultRect.add(new ClickRect(left, top, width, height));
+                            ClickRect clickRect = new ClickRect(left, top, width, height);
+                            clickRect.setButtonText(text);
+
+                            resultRect.add(clickRect);
                         }
                     }
 

@@ -30,7 +30,7 @@ public class OCRUtil {
         void onGetRect(List<Word> rectList);
     }
 
-    public void getRect(final String text, final RectCB cb, String filePath, final boolean isEqual) {
+    public void getRect(final RectCB cb, String filePath, final boolean isEqual) {
         // 通用文字识别参数设置
         GeneralParams param = new GeneralParams();
         param.setDetectDirection(false);
