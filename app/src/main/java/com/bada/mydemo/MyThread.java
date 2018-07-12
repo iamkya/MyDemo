@@ -685,9 +685,9 @@ public class MyThread extends BaseThread {
     }
 
 //    static CompletableFuture<ClickRect> getRect(String text, String tag){
-//        HashMap<String, ClickRect> rectMap = new HashMap<>();
+//        HashMap<String, ClickRect> clickRectMap = new HashMap<>();
 //
-//        ClickRect rect = rectMap.get(tag);
+//        ClickRect rect = clickRectMap.get(tag);
 //        if(rect != null)
 //            return CompletableFuture.completedFuture(rect);
 //

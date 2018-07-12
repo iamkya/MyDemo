@@ -2,44 +2,39 @@ package com.bada.mydemo;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.view.Display;
 
 import com.bada.mydemo.dataType.ClickRect;
 import com.bada.mydemo.dataType.RandomRect;
 import com.baidu.ocr.sdk.model.Word;
 
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
-import java.io.DataOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class OpenThread extends BaseThread {
 
     private static final String screen_cap_file =  "/sdcard/colorPickerTemp.png";
 
-    HashMap<String, ClickRect> rectMap;
+    HashMap<String, ClickRect> clickRectMap;
     private static final String fileClickRectData = "OpenThreadClickRectData.dat";
 
     private RandomRect confirmExpedition = new RandomRect(1010, 720, 180, 50, "confirmExpedition");
 
     private void init() {
-        rectMap = (HashMap<String, ClickRect>)SerializeObject.read(fileClickRectData);
-        if(rectMap == null){
-            rectMap = new HashMap<>();
+        clickRectMap = (HashMap<String, ClickRect>)SerializeObject.read(fileClickRectData);
+        if(clickRectMap == null){
+            clickRectMap = new HashMap<>();
         }
     }
 
@@ -89,7 +84,7 @@ public class OpenThread extends BaseThread {
                 }
             }
 
-            if(!keepChecking && i > 4) {
+            if(!keepChecking && i > 6) {
                 break;
             }
         }
@@ -169,6 +164,8 @@ public class OpenThread extends BaseThread {
     final String strStartBattle = "开始作战";
     final String strSupply = "补给";
     final String strPlanMode = "计划模式";
+    final String strExecPlan = "执行计划";
+    final String strEndRound = "结束回合";
 
     void doBattle(int index){
 
@@ -264,7 +261,72 @@ public class OpenThread extends BaseThread {
         ArrayList<ClickRect> reds = getColorRect(RectColor.red);
 
         ClickRect enemy1 = findClosest(right, reds, Direction.TOP_LEFT);
+        enemy1.setTag("enemy1");
+        click2(enemy1);
 
+        Random random = new Random();
+        int swipeX = random.nextInt(100) + 1300;
+        int swipeYStart = random.nextInt(50) + 200;
+        int swipeYHeight = random.nextInt(100) + 600;
+
+        String cmd = "input swipe " + swipeX + " " +  swipeYStart +  " " + swipeX + 908 + " " + swipeYHeight;
+        exec(cmd);
+
+        mySleep(4);
+
+        ArrayList<ClickRect> whites = getColorRect(RectColor.white);
+        ClickRect white = findMostLeft(whites);
+        white.setTag("white");
+
+        reds = getColorRect(RectColor.red);
+
+        ClickRect enemy2 = findClosest(white, reds, Direction.BOTTOM_LEFT);
+        enemy2.setTag("enemy2");
+
+        ClickRect enemy3 = findClosest(white, reds, Direction.TOP_LEFT);
+        enemy3.setTag("enemy3");
+
+        click2(enemy2);
+
+        click2(white);
+
+        click2(enemy3);
+
+        clickText(strExecPlan, "execPlanButton");
+
+        mySleep(130, "round 1 fighting");
+
+
+        clickText(strEndRound, "endRound");
+
+        mySleep(25, "round 1 enemy turn");
+
+        blues = getColorRect(RectColor.blue);
+
+        //222222
+        ClickRect round2Start = findMostLeft(blues);
+        round2Start.setTag("round2Start");
+        click2(round2Start);
+
+        clickText(strPlanMode, "planModeButton");
+
+        reds = getColorRect(RectColor.red);
+
+        ClickRect enemy4 = findClosest(round2Start, reds, Direction.TOP_RIGHT);
+        enemy4.setTag("enemy4");
+
+        ClickRect enemy5 = findClosest(enemy4, reds, Direction.BOTTOM_RIGHT);
+        enemy5.setTag("enemy5");
+
+        click2(enemy4);
+
+        click2(enemy5);
+
+        clickText(strExecPlan, "execPlanButton");
+
+        mySleep(80, "round 2 fighting");
+
+        clickText(strEndRound, "endRound");
     }
 
     enum Direction{
@@ -275,9 +337,52 @@ public class OpenThread extends BaseThread {
     }
 
     ClickRect findClosest(ClickRect base, ArrayList<ClickRect> list, Direction direction){
-        return null;
+
+        double smallestDistance = 0;
+        ClickRect closestRect = null;
+
+        for (ClickRect c : list){
+
+            if(c.getCenter().equals(base.getCenter())){
+                DebugUtil.e("findClosest getting same point " + c.getCenter().toString());
+                continue;
+            }
+
+            double atan2 = Math.atan2(c.getCenter().y - base.getCenter().y, c.getCenter().x - base.getCenter().x);
+            if(isSameDirection(atan2, direction)){
+                double distance = distance(base.getCenter(), c.getCenter());
+
+                if(smallestDistance == 0 || distance < smallestDistance){
+                    smallestDistance = distance;
+                    closestRect = c;
+                }
+            }
+        }
+
+        return closestRect;
     }
 
+    boolean isSameDirection(double atan2, Direction direction){
+        switch (direction){
+            case TOP_LEFT:
+                return atan2 < -Math.PI/2 && atan2 > -Math.PI ;
+            case TOP_RIGHT:
+                return atan2 < 0 && atan2 > -Math.PI/2;
+            case BOTTOM_LEFT:
+                return atan2 > Math.PI/2 && atan2 < Math.PI;
+            case BOTTOM_RIGHT:
+                return atan2 < Math.PI/2 && atan2 > 0;
+        }
+
+        return false;
+    }
+
+    public static double distance(Point a, Point b){
+
+        double dx = a.x - b.x;
+        double dy = a.y - b.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
 
     ClickRect findSavedFormationRect() {
 
@@ -608,7 +713,7 @@ public class OpenThread extends BaseThread {
 
         capture();
 
-        ClickRect clickRect = rectMap.get(tag);
+        ClickRect clickRect = clickRectMap.get(tag);
         if(clickRect == null) {
             clickRect = getRectViaEngine(text, tag, screen_cap_path);
         }
@@ -701,7 +806,7 @@ public class OpenThread extends BaseThread {
                     }
 
 
-                    rectMap.put(tag, resultRect.get(0));
+                    clickRectMap.put(tag, resultRect.get(0));
 
                     synchronized (waitLock){
                         try {

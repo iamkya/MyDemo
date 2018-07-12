@@ -29,10 +29,19 @@ public class BaseThread extends Thread {
 
     }
 
-    void mySleep(int sec) {
+    void mySleep(int sec){
+        mySleep(sec, null);
+    }
+
+    void mySleep(int sec, String reason) {
         try {
 
-            DebugUtil.e("about to sleep " + sec + " seconds");
+            if(reason == null){
+                DebugUtil.e("about to sleep " + sec + " seconds ");
+            }else{
+                DebugUtil.e("about to sleep " + sec + " seconds " + reason);
+            }
+
             Thread.sleep(sec * 1000);
 
         }catch (Throwable e){
@@ -132,13 +141,6 @@ public class BaseThread extends Thread {
 
     void click3(RandomRect rect) {
         click(rect, 3);
-    }
-
-    void click2(RandomRect... rects){
-
-        for(RandomRect rect:rects){
-            click2(rect);
-        }
     }
 
     static final String screen_cap_path = "/sdcard/colorPickerTemp.png";
