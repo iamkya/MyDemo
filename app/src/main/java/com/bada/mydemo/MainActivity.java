@@ -48,16 +48,16 @@ public class MainActivity extends Activity {
 //                workingThread = new WorkingThread();
 //                workingThread.start();
 
-//                openThread = new OpenThread();
-//                openThread.start();
+                openThread = new OpenThread();
+                openThread.start();
 
 //                badaThread = new BadaThread();
 //                badaThread.start();
 
 //                clickThread = new ClickThread();
 //                clickThread.start();
-                anotherThread = new AnotherThread();
-                anotherThread.start();
+//                anotherThread = new AnotherThread();
+//                anotherThread.start();
 
                 //OCRManager2.getInstance().doOcr();
 

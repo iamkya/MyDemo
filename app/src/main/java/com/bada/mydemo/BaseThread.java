@@ -107,6 +107,12 @@ public class BaseThread extends Thread {
 
     void click(RandomRect rect, int sleepTime) {
 
+        if(rect == null){
+            Exception exception = new IllegalArgumentException("null rect");
+            exception.printStackTrace();
+            return;
+        }
+
         if(rect instanceof ClickRect){
             DebugUtil.e("clicking " + rect.getTag() + " " + ((ClickRect) rect).getButtonText());
         }else{
