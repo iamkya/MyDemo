@@ -84,7 +84,7 @@ public class MyThread extends BaseThread {
 
 //            findRoundBlue();
 
-            testAna2();
+            //testAna2();
 
             findRoundWhite();
             findRoundRed();
@@ -492,7 +492,7 @@ public class MyThread extends BaseThread {
 
         try {
 
-            Mat src = Imgcodecs.imread("/sdcard/bada/5.png");
+            Mat src = Imgcodecs.imread(screen_cap_path);
 
             Mat gray = new Mat();
             Imgproc.cvtColor(src, gray, Imgproc.COLOR_BGR2HSV);
