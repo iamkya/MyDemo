@@ -87,6 +87,8 @@ public class OCRUtil {
                 for (WordSimple wordSimple : result.getWordList()){
                     Word word = (Word)wordSimple;
                     list.add(word);
+                    DebugUtil.v("found: " +word.getWords() + " at " + word.getLocation().getLeft() + " " + word.getLocation().getTop() + " " + word.getLocation().getWidth() + " " + word.getLocation().getHeight());
+
                 }
 
                 if(cb != null){

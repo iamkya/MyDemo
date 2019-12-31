@@ -47,14 +47,14 @@ public class OpenThread extends BaseThread {
 
             sleep(15 * 1000);
 
-            if(true){
-                testFunc();
-                return;
-            }
+//            if(true){
+//                testFunc();
+//                return;
+//            }
 
             while (true) {
 
-                checkExpedition(false);
+                //checkExpedition(false);
 
                 startCombat();
 
@@ -110,7 +110,7 @@ public class OpenThread extends BaseThread {
         }catch (Throwable e) {
             e.printStackTrace();
         }
-        toast("NO click");
+        //toast("NO click");
         return false;
     }
 
@@ -212,7 +212,7 @@ public class OpenThread extends BaseThread {
 
         click4(formations.get(fightGroup));
 
-        clickText("套用预设", "applyFormationButton");
+        clickText("Use Prese", "applyFormationButton");
 
         clickText("确认", "forceApplyDialogButton");
 
@@ -418,7 +418,7 @@ public class OpenThread extends BaseThread {
 
             ArrayList<ClickRect> list1 = new ArrayList<>();
             for(Word word: list){
-                if(word.getLocation().getTop() > screenHeight/2){
+                if(word.getLocation().getTop() < screenHeight/2){
 
                     if(word.getWords().contains("预设队伍")){
                         list1.add(new ClickRect(word));
@@ -802,6 +802,10 @@ public class OpenThread extends BaseThread {
                         }
                     }
 
+                    if(resultRect.size() == 0){
+
+                        DebugUtil.e("resultRect.size() == 0 while text = " + text + " tag=" + tag);
+                    }
 
                     clickRectMap.put(tag, resultRect.get(0));
 
