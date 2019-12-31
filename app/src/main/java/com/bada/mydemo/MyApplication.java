@@ -1,6 +1,8 @@
 package com.bada.mydemo;
 
 import android.app.Application;
+import android.content.IntentFilter;
+import android.provider.Telephony;
 
 import org.opencv.android.InstallCallbackInterface;
 import org.opencv.android.LoaderCallbackInterface;
@@ -50,10 +52,23 @@ public class MyApplication extends Application {
             });
             DebugUtil.e("OpenCVLoader init result " + initAsync);
 
+            smsBroadcastReceiver = new SmsBroadcastReceiver();
+            registerReceiver(smsBroadcastReceiver, new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION));
+
+            smsBroadcastReceiver.setListener(new SmsBroadcastReceiver.Listener() {
+                @Override
+                public void onTextReceived(String text) {
+                    DebugUtil.e("onTextReceived " + text);
+                }
+            });
+
         }catch (Throwable e){
             e.printStackTrace();
         }
+
     }
+
+    private SmsBroadcastReceiver smsBroadcastReceiver;
 
     @Override
     public void onTerminate() {

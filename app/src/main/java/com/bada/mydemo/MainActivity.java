@@ -1,6 +1,7 @@
 package com.bada.mydemo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -38,6 +39,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
 
+                Intent intent = new Intent("cn.com.geartech.action.call_history");
+                startActivity(intent);
 //                try {
 //                    if(workingThread != null) {
 //                        workingThread.setStop();
@@ -79,11 +82,11 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-//                openThread = new OpenThread();
-//                openThread.start();
+                openThread = new OpenThread();
+                openThread.start();
 
-                myThread = new MyThread();
-                myThread.start();
+//                myThread = new MyThread();
+//                myThread.start();
             }
         });
 

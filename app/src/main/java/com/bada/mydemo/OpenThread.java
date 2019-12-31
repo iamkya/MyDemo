@@ -56,10 +56,8 @@ public class OpenThread extends BaseThread {
 
                 checkExpedition(false);
 
-                boolean b = startCombat();
+                startCombat();
 
-                if(b)
-                    break;
             }
         }catch (Throwable e) {
             e.printStackTrace();
@@ -118,7 +116,7 @@ public class OpenThread extends BaseThread {
 
     private static final int maxCombatCount = 4;
 
-    boolean startCombat() throws Throwable{
+    void startCombat() throws Throwable{
 
         for (int i = 0; i < maxCombatCount ; i ++) {
 
@@ -127,7 +125,6 @@ public class OpenThread extends BaseThread {
             checkExpedition(false);
         }
 
-        return true;
     }
 
     private void doCombat(int index) throws Throwable {
